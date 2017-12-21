@@ -1,0 +1,8 @@
+---
+nginx:
+  prefix:
+    config: /usr/local/etc/nginx
+    log: /var/log/nginx
+  nameservers:
+    - 8.8.8.8
+    - 8.8.4.4

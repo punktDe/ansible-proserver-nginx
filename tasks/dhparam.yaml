@@ -1,0 +1,8 @@
+---
+- name: Generate custom DH primes
+  command: >
+    openssl dhparam -out {{ item|quote }} 4096
+  args:
+    creates: "{{ item }}"
+  with_items:
+    - "{{ nginx.prefix.config }}/dhparam.pem"

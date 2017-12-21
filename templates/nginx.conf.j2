@@ -1,0 +1,19 @@
+events {
+    worker_connections 1024;
+}
+
+user www;
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+
+    sendfile on;
+    keepalive_timeout 65;
+    gzip on;
+
+    access_log {{ nginx.prefix.log }}/access.log;
+    error_log {{ nginx.prefix.log }}/error.log;
+
+    include {{ nginx.prefix.config }}/http.d/*.conf;
+}
