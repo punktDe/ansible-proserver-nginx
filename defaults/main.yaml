@@ -6,3 +6,4 @@ nginx:
   nameservers:
     - 8.8.8.8
     - 8.8.4.4
+  dhparam_bits: 4096
