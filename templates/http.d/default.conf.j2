@@ -1,3 +1,4 @@
+{% if dehydrated|cert_exists(ansible_fqdn) %}
 server {
     listen [::]:80 default_server;
     listen 80 default_server;
@@ -21,3 +22,11 @@ server {
     ssl_certificate_key /usr/local/etc/ssl/certs/{{ ansible_fqdn }}/privkey.pem;
     include {{ nginx.prefix.config }}/https_params.conf;
 }
+{% else %}
+server {
+    listen [::]:80 default_server;
+    listen 80 default_server;
+
+    root /var/null;
+}
+{% endif %}
