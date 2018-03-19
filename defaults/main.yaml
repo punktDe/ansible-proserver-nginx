@@ -7,3 +7,4 @@ nginx:
     - 8.8.8.8
     - 8.8.4.4
   dhparam_bits: 4096
+  moved_permanently: {}

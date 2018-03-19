@@ -1,0 +1,36 @@
+{% for source, dest in nginx.moved_permanently.items() %}
+{% set source_domain = source.split('/')[2] %}
+{% if source.startswith('http://') %}
+server {
+    listen [::]:80;
+    listen 80;
+
+    server_name {{ source_domain }};
+
+    root /var/null;
+
+    location / {
+        return 301 {{ dest }}$request_uri;
+    }
+
+    include {{ nginx.prefix.config }}/include/letsencrypt.conf;
+}
+{% elif source.startswith('https://') %}
+server {
+    listen [::]:443;
+    listen 443;
+
+    server_name {{ source_domain }};
+
+    root /var/null;
+
+    location / {
+        return 301 {{ dest }}$request_uri;
+    }
+
+    ssl_certificate {{ dehydrated|cert_fullchain(source_domain) }};
+    ssl_certificate_key {{ dehydrated|cert_privkey(source_domain) }};
+    include {{ nginx.prefix.config }}/https_params.conf;
+}
+{% endif %}
+{% endfor %}
