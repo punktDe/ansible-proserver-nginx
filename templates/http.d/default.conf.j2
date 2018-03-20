@@ -1,7 +1,7 @@
 {% if dehydrated|cert_exists(ansible_fqdn) %}
 server {
+    listen 0.0.0.0:80 default_server;
     listen [::]:80 default_server;
-    listen 80 default_server;
 
     root /var/null;
 
@@ -13,7 +13,7 @@ server {
 }
 
 server {
-    listen 443 ssl http2 default_server;
+    listen 0.0.0.0:443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
 
     root /var/null;
@@ -24,8 +24,8 @@ server {
 }
 {% else %}
 server {
-    listen [::]:80 default_server;
-    listen 80 default_server;
+    listen 0.0.0.0:443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
 
     root /var/null;
 }

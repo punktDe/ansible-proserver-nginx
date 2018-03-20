@@ -2,8 +2,8 @@
 {% set source_domain = source.split('/')[2] %}
 {% if source.startswith('http://') %}
 server {
+    listen 0.0.0.0:80;
     listen [::]:80;
-    listen 80;
 
     server_name {{ source_domain }};
 
@@ -17,8 +17,8 @@ server {
 }
 {% elif source.startswith('https://') %}
 server {
-    listen [::]:443;
-    listen 443;
+    listen 0.0.0.0:443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name {{ source_domain }};
 
