@@ -15,5 +15,8 @@ http {
     access_log {{ nginx.prefix.log }}/access.log;
     error_log {{ nginx.prefix.log }}/error.log;
 
+    resolver {{ ' '.join(nginx.nameservers) }} valid=300s;
+    resolver_timeout 5s;
+
     include {{ nginx.prefix.config }}/http.d/*.conf;
 }

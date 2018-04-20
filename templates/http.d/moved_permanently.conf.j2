@@ -24,13 +24,15 @@ server {
 
     root /var/null;
 
+    include {{ nginx.prefix.config }}/security_headers;
+
     location / {
         return 301 {{ dest }}$request_uri;
     }
 
     ssl_certificate {{ dehydrated|cert_fullchain(source_domain) }};
     ssl_certificate_key {{ dehydrated|cert_privkey(source_domain) }};
-    include {{ nginx.prefix.config }}/https_params.conf;
+    include {{ nginx.prefix.config }}/https;
 }
 {% endif %}
 {% endfor %}

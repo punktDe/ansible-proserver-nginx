@@ -18,9 +18,11 @@ server {
 
     root /var/null;
 
+    include {{ nginx.prefix.config }}/security_headers;
+
     ssl_certificate /usr/local/etc/ssl/certs/{{ ansible_fqdn }}/fullchain.pem;
     ssl_certificate_key /usr/local/etc/ssl/certs/{{ ansible_fqdn }}/privkey.pem;
-    include {{ nginx.prefix.config }}/https_params.conf;
+    include {{ nginx.prefix.config }}/https;
 }
 {% else %}
 server {

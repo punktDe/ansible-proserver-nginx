@@ -19,3 +19,16 @@
     - "{{ role_path }}/templates/*.j2"
     - "{{ role_path }}/templates/http.d/*.j2"
   notify: Restart nginx
+
+- name: Create link for legacy configuration file paths
+  file:
+    dest: "{{ item.link }}"
+    src: "{{ item.file }}"
+    state: link
+    force: yes
+  loop_control:
+    label:  "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
+  with_items:
+    - link: "{{ nginx.prefix.config }}/https_params.conf"
+      file: "./https"
+  notify: Restart nginx
