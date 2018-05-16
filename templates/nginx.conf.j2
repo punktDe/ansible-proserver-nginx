@@ -13,7 +13,17 @@ http {
     keepalive_timeout 65;
     gzip on;
 
-    access_log {{ nginx.prefix.log }}/access.log;
+    log_format main '$host $remote_addr - $remote_user [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    '"$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
+
+    log_format json escape=json '{"host": "$host", "remote_addr": "$remote_addr", "remote_user": "$remote_user", '
+                    '"time_local": "$time_local", "request": "$request", "status": "$status", '
+                    '"body_bytes_sent": "$body_bytes_sent", "http_referer": "$http_referer", '
+                    '"http_user_agent": "$http_user_agent", "http_x_forwarded_for": "$http_x_forwarded_for", '
+                    '"http_x_real_ip": "$http_x_real_ip"}';
+
+    access_log {{ nginx.prefix.log }}/access.log {{ nginx.log_format }};
     error_log {{ nginx.prefix.log }}/error.log;
 
     resolver {{ ' '.join(nginx.nameservers) }} valid=300s;

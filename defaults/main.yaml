@@ -9,3 +9,4 @@ nginx:
   dhparam_bits: 4096
   moved_permanently: {}
   hsts: yes
+  log_format: main
