@@ -29,5 +29,7 @@ http {
     resolver {{ ' '.join(nginx.nameservers) }} valid=300s;
     resolver_timeout 5s;
 
+    proxy_ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;
+
     include {{ nginx.prefix.config }}/http.d/*.conf;
 }
