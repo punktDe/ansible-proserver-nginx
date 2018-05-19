@@ -21,7 +21,7 @@ http {
                     '"time_local": "$time_local", "request": "$request", "status": "$status", '
                     '"body_bytes_sent": "$body_bytes_sent", "http_referer": "$http_referer", '
                     '"http_user_agent": "$http_user_agent", "http_x_forwarded_for": "$http_x_forwarded_for", '
-                    '"http_x_real_ip": "$http_x_real_ip"}';
+                    '"http_x_real_ip": "$http_x_real_ip", "request_id": "$ensure_request_id"}';
 
     access_log {{ nginx.prefix.log }}/access.log {{ nginx.log_format }};
     error_log {{ nginx.prefix.log }}/error.log;
@@ -30,6 +30,13 @@ http {
     resolver_timeout 5s;
 
     proxy_ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;
+
+    # $ensure_request_id will contain the value of the X-Request-ID header if it exists,
+    # otherwise it will contain a newly generated request id.
+    map $http_x_request_id $ensure_request_id {
+        default $http_x_request_id;
+        ""      $request_id;
+    }
 
     include {{ nginx.prefix.config }}/http.d/*.conf;
 }
