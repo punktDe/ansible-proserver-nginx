@@ -8,5 +8,8 @@ nginx:
     - 1.0.0.1
   dhparam_bits: 4096
   moved_permanently: {}
-  hsts: yes
+  hsts:
+    max_age: 31536000
+    include_subdomains: no
+    preload: no
   log_format: main
