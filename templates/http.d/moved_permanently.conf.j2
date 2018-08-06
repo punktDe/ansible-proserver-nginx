@@ -32,6 +32,7 @@ server {
 
     ssl_certificate {{ dehydrated|cert_fullchain(source_domain) }};
     ssl_certificate_key {{ dehydrated|cert_privkey(source_domain) }};
+    ssl_trusted_certificate {{ dehydrated|cert_chain(source_domain) }};
     include {{ nginx.prefix.config }}/https;
 }
 {% endif %}

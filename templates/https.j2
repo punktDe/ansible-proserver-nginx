@@ -14,7 +14,6 @@ ssl_dhparam {{ nginx.prefix.config }}/dhparam.pem;
 
 ssl_stapling on;
 ssl_stapling_verify on;
-ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;
 
 {% if nginx.hsts %}
 add_header Strict-Transport-Security "max-age={{ nginx.hsts.max_age }}{% if nginx.hsts.include_subdomains %}; includeSubDomains{% endif %}{% if nginx.hsts.preload %}; preload{% endif %}";
