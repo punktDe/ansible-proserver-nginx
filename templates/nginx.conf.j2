@@ -25,7 +25,8 @@ http {
                     '"http_user_agent": "$http_user_agent", "http_x_forwarded_for": "$http_x_forwarded_for", '
                     '"http_x_real_ip": "$http_x_real_ip", "request_id": "$ensure_request_id", '
                     '"request_time": "$request_time", "bytes_sent": "$bytes_sent", "request_length": "$request_length", '
-                    '"connection": "$connection", "connection_requests": "$connection_requests"}';
+                    '"connection": "$connection", "connection_requests": "$connection_requests", '
+                    '"sent_http_content_type": "$sent_http_content_type"}';
 
     access_log {{ nginx.prefix.log }}/access.log {{ nginx.log_format }};
     error_log {{ nginx.prefix.log }}/error.log;
