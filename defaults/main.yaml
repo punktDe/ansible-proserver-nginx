@@ -13,3 +13,6 @@ nginx:
     include_subdomains: no
     preload: no
   log_format: main
+  ansible_info:
+    server_name:
+    private_api:

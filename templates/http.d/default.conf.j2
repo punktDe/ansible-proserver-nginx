@@ -33,3 +33,50 @@ server {
     root /var/null;
 }
 {% endif %}
+
+{% if nginx.ansible_info.server_name %}
+server {
+    listen 0.0.0.0:80;
+    listen [::]:80;
+
+    server_name {{ nginx.ansible_info.server_name }};
+
+    root /dev/null/404;
+
+    include {{ nginx.prefix.config }}/include/letsencrypt.conf;
+
+{% if dehydrated|cert_exists(nginx.ansible_info.server_name) %}
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 0.0.0.0:443 ssl http2;
+    listen [::]:443 ssl http2;
+
+    server_name {{ nginx.ansible_info.server_name }};
+
+    root /dev/null/404;
+
+    ssl_certificate {{ dehydrated|cert_fullchain(nginx.ansible_info.server_name) }};
+    ssl_certificate_key {{ dehydrated|cert_privkey(nginx.ansible_info.server_name) }};
+    ssl_trusted_certificate {{ dehydrated|cert_chain(nginx.ansible_info.server_name) }};
+    include {{ nginx.prefix.config }}/https;
+
+{% endif %}
+    location = / {
+        add_header Content-Type application/json;
+        return 200 '{"inventory_hostname": "{{ inventory_hostname }}"}';
+    }
+
+    {% if nginx.ansible_info.private_api %}
+    location {{ nginx.ansible_info.private_api }} {
+        add_header Content-Type application/json;
+        return 200 '{"inventory_hostname": "{{ inventory_hostname }}", "groups": {{ group_names|to_json }}, "https_endpoints": {{ (dehydrated.domains.keys()|list + dehydrated.domains.values()|sum(start=[]))|to_json }}}';
+    }
+    {% endif %}
+
+    include {{ nginx.prefix.config }}/security_headers;
+}
+{% endif %}
