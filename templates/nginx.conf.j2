@@ -43,6 +43,13 @@ http {
         ""      $request_id;
     }
 
+    # $real_ip_header will be "proxy_protocol" if the PROXY Protocol is used, otherwise it will be "X-Real-IP".
+    # This is useful if you have a vhost with http and proxy_protocol listeners: "real_ip_header $real_ip_header;"
+    map $proxy_protocol_port $real_ip_header {
+        default proxy_protocol;
+        ""      X-Real-IP;
+    }
+
     gzip on;
     gzip_vary on;
     gzip_comp_level 2;
