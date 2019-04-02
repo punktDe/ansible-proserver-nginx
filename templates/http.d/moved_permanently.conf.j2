@@ -1,16 +1,16 @@
-{% for source, dest in nginx.moved_permanently.items() %}
-{% set source_domain = source.split('/')[2] %}
-{% if source.startswith('http://') %}
+{% for src, dest in nginx.moved_permanently.items() %}
+{% set src = src|urlsplit() %}
+{% if src.scheme == 'http' %}
 server {
-    listen 0.0.0.0:80;
-    listen [::]:80;
-    {% if ansible_local.proserver.routing.with_gate64 -%}
+    listen 0.0.0.0:{{ src.port|default(80, true) }};
+    listen [::]:{{ src.port|default(80, true) }};
+    {% if ansible_local.proserver.routing.with_gate64 and src.port|default(80, true) == 80 -%}
     listen [::1]:87 proxy_protocol;
     real_ip_header $real_ip_header;
     set_real_ip_from {{ ansible_local.proserver.routing.gate64_ip_address }};
     {%- endif %}
 
-    server_name {{ source_domain }};
+    server_name {{ src.hostname }};
 
     root /var/null;
 
@@ -20,17 +20,17 @@ server {
 
     include {{ nginx.prefix.config }}/include/letsencrypt.conf;
 }
-{% elif source.startswith('https://') %}
+{% elif src.scheme == 'https' %}
 server {
-    listen 0.0.0.0:443 ssl http2;
-    listen [::]:443 ssl http2;
-    {% if ansible_local.proserver.routing.with_gate64 -%}
+    listen 0.0.0.0:{{ src.port|default(443, true) }} ssl http2;
+    listen [::]:{{ src.port|default(443, true) }} ssl http2;
+    {% if ansible_local.proserver.routing.with_gate64 and src.port|default(443, true) == 443 -%}
     listen [::1]:57 ssl http2 proxy_protocol;
     real_ip_header $real_ip_header;
     set_real_ip_from {{ ansible_local.proserver.routing.gate64_ip_address }};
     {%- endif %}
 
-    server_name {{ source_domain }};
+    server_name {{ src.hostname }};
 
     root /var/null;
 
@@ -40,9 +40,9 @@ server {
         return 301 {{ dest }}$request_uri;
     }
 
-    ssl_certificate {{ dehydrated|cert_fullchain(source_domain) }};
-    ssl_certificate_key {{ dehydrated|cert_privkey(source_domain) }};
-    ssl_trusted_certificate {{ dehydrated|cert_chain(source_domain) }};
+    ssl_certificate {{ dehydrated|cert_fullchain(src.hostname) }};
+    ssl_certificate_key {{ dehydrated|cert_privkey(src.hostname) }};
+    ssl_trusted_certificate {{ dehydrated|cert_chain(src.hostname) }};
     include {{ nginx.prefix.config }}/https;
 }
 {% endif %}
