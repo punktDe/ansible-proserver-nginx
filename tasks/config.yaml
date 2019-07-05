@@ -17,6 +17,7 @@
     render_path: "{{ nginx.prefix.config }}/{{ item|strip_prefix(template_dir + '/')|strip_suffix('.j2') }}"
   with_fileglob:
     - "{{ role_path }}/templates/*.j2"
+    - "{{ role_path }}/templates/include/*.j2"
     - "{{ role_path }}/templates/http.d/*.j2"
   notify: Restart nginx
 
@@ -30,5 +31,9 @@
     label:  "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
   with_items:
     - link: "{{ nginx.prefix.config }}/https_params.conf"
-      file: "./https"
+      file: "include/https_params.conf"
+    - link: "{{ nginx.prefix.config }}/https"
+      file: "include/https_params.conf"
+    - link: "{{ nginx.prefix.config }}/security_headers"
+      file: "include/security_headers.conf"
   notify: Restart nginx

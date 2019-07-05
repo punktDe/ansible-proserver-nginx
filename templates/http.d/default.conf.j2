@@ -18,12 +18,12 @@ server {
 
     root /var/null;
 
-    include {{ nginx.prefix.config }}/security_headers;
+    include {{ nginx.prefix.config }}/include/security_headers.conf;
 
     ssl_certificate {{ dehydrated|cert_fullchain(ansible_fqdn) }};
     ssl_certificate_key {{ dehydrated|cert_privkey(ansible_fqdn) }};
     ssl_trusted_certificate {{ dehydrated|cert_chain(ansible_fqdn) }};
-    include {{ nginx.prefix.config }}/https;
+    include {{ nginx.prefix.config }}/include/https_params.conf;
 }
 {% else %}
 server {
@@ -62,7 +62,7 @@ server {
     ssl_certificate {{ dehydrated|cert_fullchain(nginx.ansible_info.server_name) }};
     ssl_certificate_key {{ dehydrated|cert_privkey(nginx.ansible_info.server_name) }};
     ssl_trusted_certificate {{ dehydrated|cert_chain(nginx.ansible_info.server_name) }};
-    include {{ nginx.prefix.config }}/https;
+    include {{ nginx.prefix.config }}/include/https_params.conf;
 
 {% endif %}
     location = / {
@@ -77,6 +77,6 @@ server {
     }
     {% endif %}
 
-    include {{ nginx.prefix.config }}/security_headers;
+    include {{ nginx.prefix.config }}/include/security_headers.conf;
 }
 {% endif %}

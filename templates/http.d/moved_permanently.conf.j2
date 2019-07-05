@@ -34,7 +34,7 @@ server {
 
     root /var/null;
 
-    include {{ nginx.prefix.config }}/security_headers;
+    include {{ nginx.prefix.config }}/include/security_headers.conf;
 
     location / {
         return 301 {{ dest }}$request_uri;
@@ -43,7 +43,7 @@ server {
     ssl_certificate {{ dehydrated|cert_fullchain(src.hostname) }};
     ssl_certificate_key {{ dehydrated|cert_privkey(src.hostname) }};
     ssl_trusted_certificate {{ dehydrated|cert_chain(src.hostname) }};
-    include {{ nginx.prefix.config }}/https;
+    include {{ nginx.prefix.config }}/include/https_params.conf;
 }
 {% endif %}
 {% endfor %}
