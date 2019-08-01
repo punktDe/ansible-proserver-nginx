@@ -1,5 +1,5 @@
 ---
-- name: Generate custom DH primes
+- name: Generate custom DH primes (this might take up to an hour)
   command: >
     openssl dhparam -out {{ item|quote }} {{ nginx.dhparam_bits|string|quote }}
   args:
