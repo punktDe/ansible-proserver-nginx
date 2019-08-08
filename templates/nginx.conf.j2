@@ -1,3 +1,7 @@
+{% for module, module_status in nginx.dynamic_modules.items() %}{% if module_status %}
+load_module /usr/local/libexec/nginx/{{ module }};
+{% endif %}{% endfor %}
+
 worker_processes 8;
 
 events {
