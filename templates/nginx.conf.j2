@@ -35,7 +35,7 @@ http {
     access_log {{ nginx.prefix.log }}/access.log {{ nginx.log_format }};
     error_log {{ nginx.prefix.log }}/error.log;
 
-    resolver {{ ' '.join(nginx.nameservers) }} valid=300s;
+    resolver {{ ' '.join(nginx.nameservers) }} valid={{ nginx.nameservers_valid }};
     resolver_timeout 5s;
 
     proxy_ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;

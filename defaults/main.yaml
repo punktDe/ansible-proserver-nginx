@@ -6,6 +6,7 @@ nginx:
   nameservers:
     - '[2606:4700:4700::1111]:53'
     - '[2606:4700:4700::1001]:53'
+  nameservers_valid: 300s
   dhparam_bits: 4096
   moved_permanently: {}
   hsts:
