@@ -1,5 +1,6 @@
-{% for src, dest in nginx.moved_permanently.items() %}
+{% for src, dest in nginx.moved_permanently.items()|list + nginx.redirects.items()|list %}
 {% set src = src|urlsplit() %}
+{% set dest = dest if dest is mapping else {'url': dest} %}
 {% if src.scheme == 'http' %}
 server {
     listen 0.0.0.0:{{ src.port|default(80, true) }};
@@ -14,7 +15,7 @@ server {
     root /var/null;
 
     location / {
-        return 301 {{ dest }}$request_uri;
+        return {{ dest['code']|default(301) }} {{ dest['url'] }}{{ '$request_uri' if dest['uri']|default(true) else '' }};
     }
 
     include {{ nginx.prefix.config }}/include/letsencrypt.conf;
@@ -35,7 +36,7 @@ server {
     include {{ nginx.prefix.config }}/include/security_headers.conf;
 
     location / {
-        return 301 {{ dest }}$request_uri;
+        return {{ dest['code']|default(301) }} {{ dest['url'] }}{{ '$request_uri' if dest['uri']|default(true) else '' }};
     }
 
     ssl_certificate {{ dehydrated|cert_fullchain(src.hostname) }};

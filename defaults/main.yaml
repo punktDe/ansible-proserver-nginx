@@ -9,6 +9,7 @@ nginx:
   nameservers_valid: 300s
   dhparam_bits: 4096
   moved_permanently: {}
+  redirects: {}
   hsts:
     max_age: 31536000
     include_subdomains: no
