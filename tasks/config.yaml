@@ -19,7 +19,7 @@
     - "{{ role_path }}/templates/*.j2"
     - "{{ role_path }}/templates/include/*.j2"
     - "{{ role_path }}/templates/http.d/*.j2"
-  notify: Restart nginx
+  notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
   file:
@@ -36,4 +36,4 @@
       file: "include/https_params.conf"
     - link: "{{ nginx.prefix.config }}/security_headers"
       file: "include/security_headers.conf"
-  notify: Restart nginx
+  notify: Reload nginx
