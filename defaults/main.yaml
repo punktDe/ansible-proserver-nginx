@@ -18,4 +18,5 @@ nginx:
   ansible_info:
     server_name:
     private_api:
-  dynamic_modules: {}
+  dynamic_modules:
+    ngx_http_headers_more_filter_module.so: yes
