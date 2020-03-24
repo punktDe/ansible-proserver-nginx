@@ -27,7 +27,7 @@ http {
     access_log {{ nginx.prefix.log }}/access.log {{ nginx.log_format }};
     error_log {{ nginx.prefix.log }}/error.log;
 
-    resolver {{ ' '.join(nginx.nameservers) }} valid={{ nginx.nameservers_valid }};
+    resolver {{ ' '.join(nginx.nameservers) }} valid={{ nginx.nameservers_valid }} ipv6={{ nginx.nameservers_ipv6 }};
     resolver_timeout 5s;
 
     proxy_ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;
