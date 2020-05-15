@@ -2,7 +2,7 @@
 load_module /usr/local/libexec/nginx/{{ module }};
 {% endif %}{% endfor %}
 
-worker_processes 8;
+worker_processes auto;
 
 events {
     worker_connections 1024;
