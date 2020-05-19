@@ -3,6 +3,7 @@ nginx:
   prefix:
     config: /usr/local/etc/nginx
     log: /var/log/nginx
+  worker_processes: 8
   nameservers:
     - '[2606:4700:4700::1111]:53'
     - '[2606:4700:4700::1001]:53'
