@@ -1,4 +1,5 @@
 ---
+- import_tasks: install.yaml
 - import_tasks: config.yaml
 - import_tasks: dhparam.yaml
 - import_tasks: htpasswd.yaml
