@@ -1,9 +1,15 @@
 ---
 nginx:
   prefix:
-    config: /usr/local/etc/nginx
+    config: >-
+      {%- if ansible_system == 'Linux' -%}
+        /etc/nginx
+      {%- else -%}
+        /usr/local/etc/nginx
+      {%- endif -%}
     log: /var/log/nginx
   worker_processes: 8
+  user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
   nameservers:
     - '[2606:4700:4700::1111]:53'
     - '[2606:4700:4700::1001]:53'
@@ -44,5 +50,5 @@ nginx:
     server_name:
     private_api:
   dynamic_modules:
-    ngx_http_headers_more_filter_module.so: yes
+    ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
   htpasswd: {}

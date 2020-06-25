@@ -4,6 +4,7 @@
     path: "{{ item }}"
     state: directory
   with_items:
+    - "{{ nginx.prefix.config }}/include"
     - "{{ nginx.prefix.config }}/http.d"
 
 - name: Template nginx configuration
