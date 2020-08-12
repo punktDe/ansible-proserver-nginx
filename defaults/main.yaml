@@ -52,3 +52,4 @@ nginx:
   dynamic_modules:
     ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
   htpasswd: {}
+  stub_status_port:

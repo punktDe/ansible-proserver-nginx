@@ -74,5 +74,15 @@ http {
         font/otf
     ;
 
+    {% if nginx.stub_status_port -%}
+    server {
+        listen 127.0.0.1:{{ nginx.stub_status_port }};
+        listen [::1]:{{ nginx.stub_status_port }};
+
+        stub_status;
+        server_tokens on;
+    }
+    {% endif -%}
+
     include {{ nginx.prefix.config }}/http.d/*.conf;
 }
