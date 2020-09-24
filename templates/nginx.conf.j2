@@ -39,6 +39,13 @@ http {
         ""      $request_id;
     }
 
+    {% if nginx.real_ip_header %}
+    real_ip_header {{ nginx.real_ip_header }};
+    {% endif %}
+    {% for set_real_ip_from in nginx.set_real_ip_from.values()|reject('eq', none) %}
+    set_real_ip_from {{ set_real_ip_from }};
+    {% endfor %}
+
     {% if ansible_local.proserver.routing.gate64_ip_address %}
     # If the request uses PROXY protocol, set the X-Real-IP request header to the client address from PROXY protocol.
     # If the request originates from the proServer`s gate64 IP address, use the value from X-Real-IP as client address.
@@ -46,7 +53,6 @@ http {
         default $proxy_protocol_addr;
         ""      $http_x_real_ip;
     }
-    real_ip_header X-Real-IP;
     more_set_input_headers "X-Real-IP: $x_real_ip";
     set_real_ip_from {{ ansible_local.proserver.routing.gate64_ip_address }};
     {% endif %}
