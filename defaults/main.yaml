@@ -49,7 +49,14 @@ nginx:
   ansible_info:
     server_name:
     private_api:
+  dynamic_modules_path: >-
+      {%- if ansible_system == 'Linux' -%}
+        /usr/lib/nginx/modules
+      {%- else -%}
+        /usr/local/libexec/nginx
+      {%- endif -%}
   dynamic_modules:
     ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
+    ngx_stream_module.so: no
   htpasswd: {}
   stub_status_port:

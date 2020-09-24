@@ -6,6 +6,7 @@
   with_items:
     - "{{ nginx.prefix.config }}/include"
     - "{{ nginx.prefix.config }}/http.d"
+    - "{{ nginx.prefix.config }}/stream.d"
 
 - name: Template nginx configuration
   template:

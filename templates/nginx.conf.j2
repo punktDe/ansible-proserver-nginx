@@ -1,5 +1,5 @@
 {% for module, module_status in nginx.dynamic_modules.items() %}{% if module_status %}
-load_module /usr/local/libexec/nginx/{{ module }};
+load_module {{ nginx.dynamic_modules_path }}/{{ module }};
 {% endif %}{% endfor %}
 
 worker_processes {{ nginx.worker_processes }};
@@ -86,3 +86,9 @@ http {
 
     include {{ nginx.prefix.config }}/http.d/*.conf;
 }
+
+{% if nginx.dynamic_modules['ngx_stream_module.so'] %}
+stream {
+    include {{ nginx.prefix.config }}/stream.d/*.conf;
+}
+{% endif %}
