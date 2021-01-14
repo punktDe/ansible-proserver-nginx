@@ -30,7 +30,7 @@ http {
     resolver {{ ' '.join(nginx.nameservers) }} valid={{ nginx.nameservers_valid }} ipv6={{ nginx.nameservers_ipv6 }};
     resolver_timeout 5s;
 
-    proxy_ssl_trusted_certificate /usr/local/share/certs/ca-root-nss.crt;
+    proxy_ssl_trusted_certificate {{ nginx.proxy_ssl_trusted_certificate }};
 
     # $ensure_request_id will contain the value of the X-Request-ID header if it exists,
     # otherwise it will contain a newly generated request id.
