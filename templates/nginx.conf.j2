@@ -11,7 +11,7 @@ events {
 user {{ nginx.user }};
 
 http {
-    include {{ nginx.prefix.config }}/mime.types;
+    include {{ nginx.prefix.config.general }}/mime.types;
     default_type application/octet-stream;
 
     server_tokens off;
@@ -97,11 +97,13 @@ http {
     }
     {% endif -%}
 
-    include {{ nginx.prefix.config }}/http.d/*.conf;
+    include {{ nginx.prefix.config.general }}/{{ nginx.prefix.config.conf | regex_replace('available', 'enabled') }}/*.conf;
+    include {{ nginx.prefix.config.general }}/{{ nginx.prefix.config.modules | regex_replace('available', 'enabled') }}/*.conf;
+    include {{ nginx.prefix.config.general }}/{{ nginx.prefix.config.vhosts | regex_replace('available', 'enabled') }}/*.conf;
 }
 
 {% if nginx.dynamic_modules['ngx_stream_module.so'] %}
 stream {
-    include {{ nginx.prefix.config }}/stream.d/*.conf;
+    include {{ nginx.prefix.config.general }}/{{ nginx.prefix.config.streams | regex_replace('available', 'enabled') }}/*.conf;
 }
 {% endif %}
