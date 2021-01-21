@@ -50,6 +50,43 @@
     - "{{ role_path }}/templates/stream.d/*.j2"
   notify: Reload nginx
 
+- name: Create Links in nginx available directories
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  loop_control:
+    label: "{{ template_path }}"
+  vars:
+    template_dir: "{{ role_path }}/templates"
+    template_path: "{{ item|strip_prefix(template_dir + '/')|strip_suffix('.j2') }}"
+  file:
+    path: >-
+      {{ nginx.prefix.config.general }}/
+      {%- if 'conf.d' in template_path -%}
+        {{ nginx.prefix.config.conf | regex_replace('available', 'enabled') }}/{{ template_path | strip_prefix('conf.d/') }}
+      {%- elif 'http.d' in template_path -%}
+        {{ nginx.prefix.config.vhosts | regex_replace('available', 'enabled') }}/{{ template_path | strip_prefix('http.d/') }}
+      {%- elif 'mod.d' in template_path -%}
+        {{ nginx.prefix.config.modules | regex_replace('available', 'enabled') }}/{{ template_path | strip_prefix('mod.d/') }}
+      {%- elif 'stream.d' in template_path -%}
+        {{ nginx.prefix.config.streams | regex_replace('available', 'enabled') }}/{{ template_path | strip_prefix('stream.d/') }}
+      {%- endif -%}
+    src: >-
+      {{ nginx.prefix.config.general }}/
+      {%- if 'conf.d' in template_path -%}
+        {{ nginx.prefix.config.conf }}/{{ template_path | strip_prefix('conf.d/') }}
+      {%- elif 'http.d' in template_path -%}
+        {{ nginx.prefix.config.vhosts }}/{{ template_path | strip_prefix('http.d/') }}
+      {%- elif 'mod.d' in template_path -%}
+        {{ nginx.prefix.config.modules }}/{{ template_path | strip_prefix('mod.d/') }}
+      {%- elif 'stream.d' in template_path -%}
+        {{ nginx.prefix.config.streams }}/{{ template_path | strip_prefix('stream.d/') }}
+      {%- endif -%}
+    state: link
+  with_fileglob:
+    - "{{ role_path }}/templates/conf.d/*.j2"
+    - "{{ role_path }}/templates/http.d/*.j2"
+    - "{{ role_path }}/templates/mod.d/*.j2"
+    - "{{ role_path }}/templates/stream.d/*.j2"
+
 - name: Create link for legacy configuration file paths
   file:
     dest: "{{ item.link }}"
