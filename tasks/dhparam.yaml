@@ -5,4 +5,4 @@
   args:
     creates: "{{ item }}"
   with_items:
-    - "{{ nginx.prefix.config }}/dhparam.pem"
+    - "{{ nginx.prefix.config.general }}/dhparam.pem"

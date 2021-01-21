@@ -97,9 +97,9 @@
     label:  "{{ nginx.prefix.config.general }}/https_params.conf dest={{ item.file }}"
   with_items:
     - link: "{{ nginx.prefix.config.general }}/https_params.conf"
-      file: "include/https_params.conf"
+      file: "{{ nginx.prefix.config.conf }}/https_params.conf"
     - link: "{{ nginx.prefix.config.general }}/https"
-      file: "include/https_params.conf"
+      file: "{{ nginx.prefix.config.conf }}/https_params.conf"
     - link: "{{ nginx.prefix.config.general }}/security_headers"
-      file: "include/security_headers.conf"
+      file: "{{ nginx.prefix.config.conf }}/security_headers.conf"
   notify: Reload nginx
