@@ -8,26 +8,26 @@ nginx:
         {%- else -%}
           /usr/local/etc/nginx
         {%- endif -%}
-      vhosts:
-        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+      vhosts: >-
+        {%- if ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
           sites-available
         {%- else -%}
           vhosts
         {%- endif -%}
-      conf:
-        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+      conf: >-
+        {%- if ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
           conf-available
         {%- else -%}
           include
         {%- endif -%}
-      modules:
-        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+      modules: >-
+        {%- if ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
           mods-available
         {%- else -%}
           modules
         {%- endif -%}
-      streams:
-        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+      streams: >-
+        {%- if ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
           streams-available
         {%- else -%}
           streams
