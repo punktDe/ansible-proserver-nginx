@@ -1,12 +1,38 @@
 ---
 nginx:
   prefix:
-    config: >-
-      {%- if ansible_system == 'Linux' -%}
-        /etc/nginx
-      {%- else -%}
-        /usr/local/etc/nginx
-      {%- endif -%}
+    config:
+      general: >-
+        {%- if ansible_system == 'Linux' -%}
+          /etc/nginx
+        {%- else -%}
+          /usr/local/etc/nginx
+        {%- endif -%}
+      vhosts:
+        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+          sites-available
+        {%- else -%}
+          vhosts
+        {%- endif -%}
+      conf:
+        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+          conf-available
+        {%- else -%}
+          include
+        {%- endif -%}
+      modules:
+        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+          mods-available
+        {%- else -%}
+          modules
+        {%- endif -%}
+      streams:
+        {%- if ansible_distibution == 'Debian' or ansible_distribution == 'Ubuntu' -%}
+          streams-available
+        {%- else -%}
+          streams
+        {%- endif -%}
+
     log: /var/log/nginx
   worker_processes: 8
   user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
