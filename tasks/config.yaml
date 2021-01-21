@@ -3,10 +3,22 @@
   file:
     path: "{{ item }}"
     state: directory
-  with_items:
-    - "{{ nginx.prefix.config }}/include"
-    - "{{ nginx.prefix.config }}/http.d"
-    - "{{ nginx.prefix.config }}/stream.d"
+  loop:
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.conf }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.vhosts }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.modules }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.streams }}"
+
+- name: Create nginx available directories
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.conf | regex_replace('available', 'enabled') }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.vhosts | regex_replace('available', 'enabled') }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.modules | regex_replace('available', 'enabled') }}"
+    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.streams | regex_replace('available', 'enabled') }}"
 
 - name: Template nginx configuration
   template:
@@ -16,11 +28,26 @@
     label: "{{ render_path }}"
   vars:
     template_dir: "{{ role_path }}/templates"
-    render_path: "{{ nginx.prefix.config }}/{{ item|strip_prefix(template_dir + '/')|strip_suffix('.j2') }}"
+    template_path: "{{ item|strip_prefix(template_dir + '/')|strip_suffix('.j2') }}"
+    render_path: >-
+      {{ nginx.prefix.config.general }}/
+      {%- if 'conf.d' in template_path -%}
+        {{ nginx.prefix.config.conf }}/{{ template_path | strip_prefix('conf.d/') }}
+      {%- elif 'http.d' in template_path -%}
+        {{ nginx.prefix.config.vhosts }}/{{ template_path | strip_prefix('http.d/') }}
+      {%- elif 'mod.d' in template_path -%}
+        {{ nginx.prefix.config.modules }}/{{ template_path | strip_prefix('mod.d/') }}
+      {%- elif 'stream.d' in template_path -%}
+        {{ nginx.prefix.config.streams }}/{{ template_path | strip_prefix('stream.d/') }}
+      {%- else -%}
+        {{ template_path }}
+      {%- endif -%}
   with_fileglob:
     - "{{ role_path }}/templates/*.j2"
-    - "{{ role_path }}/templates/include/*.j2"
+    - "{{ role_path }}/templates/conf.d/*.j2"
     - "{{ role_path }}/templates/http.d/*.j2"
+    - "{{ role_path }}/templates/mod.d/*.j2"
+    - "{{ role_path }}/templates/stream.d/*.j2"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
@@ -30,12 +57,12 @@
     state: link
     force: yes
   loop_control:
-    label:  "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
+    label:  "{{ nginx.prefix.config.general }}/https_params.conf dest={{ item.file }}"
   with_items:
-    - link: "{{ nginx.prefix.config }}/https_params.conf"
+    - link: "{{ nginx.prefix.config.general }}/https_params.conf"
       file: "include/https_params.conf"
-    - link: "{{ nginx.prefix.config }}/https"
+    - link: "{{ nginx.prefix.config.general }}/https"
       file: "include/https_params.conf"
-    - link: "{{ nginx.prefix.config }}/security_headers"
+    - link: "{{ nginx.prefix.config.general }}/security_headers"
       file: "include/security_headers.conf"
   notify: Reload nginx
