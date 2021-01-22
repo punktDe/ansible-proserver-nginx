@@ -9,16 +9,14 @@
     - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.modules }}"
     - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.streams }}"
 
-- name: Create nginx available directories
+- name: Create nginx enabled directories
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   file:
     path: "{{ item }}"
     state: directory
   loop:
-    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.conf | regex_replace('available', 'enabled') }}"
     - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.vhosts | regex_replace('available', 'enabled') }}"
     - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.modules | regex_replace('available', 'enabled') }}"
-    - "{{ nginx.prefix.config.general }}/{{ nginx.prefix.config.streams | regex_replace('available', 'enabled') }}"
 
 - name: Template nginx configuration
   template:
@@ -82,10 +80,8 @@
       {%- endif -%}
     state: link
   with_fileglob:
-    - "{{ role_path }}/templates/conf.d/*.j2"
     - "{{ role_path }}/templates/http.d/*.j2"
     - "{{ role_path }}/templates/mod.d/*.j2"
-    - "{{ role_path }}/templates/stream.d/*.j2"
 
 - name: Create link for legacy configuration file paths
   file:
