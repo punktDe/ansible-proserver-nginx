@@ -11,8 +11,9 @@ nginx:
   worker_processes: 8
   user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
   nameservers:
-    - '[2606:4700:4700::1111]:53'
-    - '[2606:4700:4700::1001]:53'
+    - '217.29.32.130:53' # rdns1.karlsruhe.punkt.de
+    - '217.29.32.131:53' # rdns2.karlsruhe.punkt.de
+    - '[2a00:b580:8000:14:b03e:590:8687:ac55]:53' # rdns2.karlsruhe.punkt.de
   nameservers_valid: 300s
   nameservers_ipv6: "on"
   dhparam_bits: 4096
