@@ -9,18 +9,24 @@
     - "{{ nginx.prefix.config }}/stream.d"
 
 - name: Template nginx configuration
+  loop:
+    - src: nginx.conf
+      dest: "{{ nginx.prefix.config }}/nginx.conf"
+    - src: http.d/default.conf
+      dest: "{{ nginx.prefix.config }}/http.d/default.conf"
+    - src: http.d/moved_permanently.conf
+      dest: "{{ nginx.prefix.config }}/http.d/moved_permanently.conf"
+    - src: include/https_params.conf
+      dest: "{{ nginx.prefix.config }}/include/https_params.conf"
+    - src: include/letsencrypt.conf
+      dest: "{{ nginx.prefix.config }}/include/letsencrypt.conf"
+    - src: include/proxy_headers.conf
+      dest: "{{ nginx.prefix.config }}/include/proxy_headers.conf"
+    - src: include/security_headers.conf
+      dest: "{{ nginx.prefix.config }}/include/security_headers.conf"
   template:
-    src: "{{ item }}"
-    dest: "{{ render_path }}"
-  loop_control:
-    label: "{{ render_path }}"
-  vars:
-    template_dir: "{{ role_path }}/templates"
-    render_path: "{{ nginx.prefix.config }}/{{ item|strip_prefix(template_dir + '/') }}"
-  with_fileglob:
-    - "{{ role_path }}/templates/*.conf"
-    - "{{ role_path }}/templates/include/*.conf"
-    - "{{ role_path }}/templates/http.d/*.conf"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
