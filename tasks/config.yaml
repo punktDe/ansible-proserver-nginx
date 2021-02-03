@@ -16,7 +16,7 @@
     label: "{{ render_path }}"
   vars:
     template_dir: "{{ role_path }}/templates"
-    render_path: "{{ nginx.prefix.config }}/{{{ item|strip_prefix(template_dir + '/') }}"
+    render_path: "{{ nginx.prefix.config }}/{{ item|strip_prefix(template_dir + '/') }}"
   with_fileglob:
     - "{{ role_path }}/templates/*.conf"
     - "{{ role_path }}/templates/include/*.conf"
