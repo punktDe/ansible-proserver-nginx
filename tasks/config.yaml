@@ -16,11 +16,11 @@
     label: "{{ render_path }}"
   vars:
     template_dir: "{{ role_path }}/templates"
-    render_path: "{{ nginx.prefix.config }}/{{ item|strip_prefix(template_dir + '/')|strip_suffix('.j2') }}"
+    render_path: "{{ nginx.prefix.config }}/{{{ item|strip_prefix(template_dir + '/') }}"
   with_fileglob:
-    - "{{ role_path }}/templates/*.j2"
-    - "{{ role_path }}/templates/include/*.j2"
-    - "{{ role_path }}/templates/http.d/*.j2"
+    - "{{ role_path }}/templates/*.conf"
+    - "{{ role_path }}/templates/include/*.conf"
+    - "{{ role_path }}/templates/http.d/*.conf"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
