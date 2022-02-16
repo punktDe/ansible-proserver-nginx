@@ -1,8 +1,12 @@
 ---
 - name: Generate custom DH primes (this might take up to an hour)
-  command: >
-    openssl dhparam -out {{ item|quote }} {{ nginx.dhparam_bits|string|quote }}
+  shell: |
+    set -e
+    trap 'rm -f {{ item|quote }}.$$' EXIT
+    openssl dhparam -out {{ item|quote }}.$$ {{ nginx.dhparam_bits|string|quote }}
+    mv {{ item|quote }}.$$ {{ item|quote }}
   args:
     creates: "{{ item }}"
+    executable: bash
   with_items:
     - "{{ nginx.prefix.config }}/dhparam.pem"
