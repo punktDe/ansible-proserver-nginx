@@ -56,7 +56,6 @@ nginx:
         connection: $connection
         connection_requests: $connection_requests
         sent_http_content_type: $sent_http_content_type
-        dnt: $dnt
   ansible_info:
     server_name:
     private_api:
