@@ -24,4 +24,4 @@ nginx:
         reflected-xss block;
         referrer no-referrer-when-downgrade;
       always: yes
-  security_headers_merged: "{{ security_headers_default | community.general.lists_mergeby(security_headers, 'header') }}"
+nginx_security_headers_merged: "{{ nginx['security_headers_default'] | community.general.lists_mergeby(nginx['security_headers'], 'header') }}"
