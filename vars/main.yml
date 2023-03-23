@@ -12,16 +12,10 @@ nginx:
     - header: "Referrer-Policy"
       value: "no-referrer-when-downgrade"
       always: yes
+    - header: "Strict-Transport-Policy"
+      value: "max-age=15768000"
+      always: yes
     - header: "Content-Security-Policy"
-      value: >-
-        default-src 'none';
-        script-src 'self' 'unsafe-inline';
-        style-src 'self';
-        img-src 'self';
-        font-src 'self';
-        upgrade-insecure-requests;
-        block-all-mixed-content;
-        reflected-xss block;
-        referrer no-referrer-when-downgrade;
+      value: "frame-ancestors 'self'"
       always: yes
 nginx_security_headers_merged: "{{ nginx['security_headers_default'] | community.general.lists_mergeby(nginx['security_headers'], 'header') }}"
