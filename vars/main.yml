@@ -12,6 +12,9 @@ nginx:
     - header: "Referrer-Policy"
       value: "no-referrer-when-downgrade"
       always: yes
+    - header: "Content-Security-Policy"
+      value: "frame-ancestors 'self'"
+      always: yes
     - header: "Strict-Transport-Security"
       value: "max-age=31536000"
       always: yes
