@@ -1,6 +1,5 @@
 ---
-nginx:
-  security_headers_default:
+nginx_security_headers_default:
     - header: "X-Frame-Options"
       value: "SAMEORIGIN"
       always: yes
@@ -18,6 +17,6 @@ nginx:
       always: yes
     - header: "Strict-Transport-Security"
       value: >-
-        {% if hsts %}max-age={{ hsts.max_age }}{% if hsts.include_subdomains %}; includeSubdomains{% endif %}{% if hsts.preload %}; preload{% endif %}{% endif %}
+        {% if nginx.hsts %}max-age={{ nginx.hsts.max_age }}{% if nginx.hsts.include_subdomains %};includeSubdomains{% endif %}{% if nginx.hsts.preload %}; preload{% endif %}{% endif %}
       always: yes
-nginx_security_headers_merged: "{{ nginx['security_headers_default'] | community.general.lists_mergeby(nginx['security_headers'], 'header') }}"
+nginx_security_headers_merged: "{{ nginx_security_headers_default | community.general.lists_mergeby(nginx['security_headers'], 'header') }}"
