@@ -1,12 +1,4 @@
 ---
-- name: Generate custom DH primes (this might take up to an hour)
-  shell: |
-    set -e
-    trap 'rm -f {{ item|quote }}.$$' EXIT
-    openssl dhparam -out {{ item|quote }}.$$ {{ nginx.dhparam_bits|string|quote }}
-    mv {{ item|quote }}.$$ {{ item|quote }}
-  args:
-    creates: "{{ item }}"
-    executable: bash
-  with_items:
-    - "{{ nginx.prefix.config }}/dhparam.pem"
+- name: Generate Diffie-Hellman parameters with the size of {{ nginx.dhparam_bits | string }}
+  community.crypto.openssl_dhparam:
+    path: "{{ nginx.prefix.config }}/dhparams.pem"

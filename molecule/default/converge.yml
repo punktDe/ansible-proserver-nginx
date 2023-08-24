@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-proserver-nginx"
+      ansible.builtin.include_role:
+        name: "ansible-proserver-nginx"

@@ -1,12 +1,12 @@
 ---
 - name: Restart nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     state: restarted
   register: restart_nginx_result
 
 - name: Reload nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     state: reloaded
   when: not (restart_nginx_result is defined and restart_nginx_result.changed)
