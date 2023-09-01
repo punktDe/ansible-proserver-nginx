@@ -1,5 +1,6 @@
 ---
 nginx:
+  security_headers: []
   prefix:
     config: >-
       {%- if ansible_system == 'Linux' -%}
