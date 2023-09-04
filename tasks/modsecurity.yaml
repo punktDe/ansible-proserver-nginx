@@ -1,0 +1,41 @@
+- name: Create modsecurity drop-in configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: "{{ root_group }}"
+    mode: "0755"
+  loop:
+    - "{{ nginx.prefix.modsecurity.config }}"
+    - "{{ nginx.prefix.modsecurity.config }}/crs"
+
+
+- name: Template the modsecurity configuation parameters
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    group: "{{ root_group }}"
+    owner: root
+    mode: "0644"
+  notify: Restart nginx
+  loop:
+    - src: modsecurity/main.conf.j2
+      dest: "{{ nginx.prefix.modsecurity.config }}/main.conf"
+    - src: modsecurity/modsecurity.conf.j2
+      dest: "{{ nginx.prefix.modsecurity.config }}/modsecurity.conf"
+
+- name: Download the OWASP CoreRuleSet {{ nginx.modsecurity.owasp_crs.version }}
+  when: nginx.modsecurity.owasp_crs.enabled
+  notify: Restart nginx
+  ansible.builtin.unarchive:
+    src: https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ nginx.modsecurity.owasp_crs.version }}.zip
+    remote_src: yes
+    dest: "{{ nginx.prefix.modsecurity.config }}/crs"
+    owner: root
+    group: "{{ root_group }}"
+
+- name: Copy the example config into place
+  ansible.builtin.copy:
+    dest: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf"
+    src: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf.example"
+    remote_src: yes

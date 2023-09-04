@@ -1,0 +1,6 @@
+{% for i in (nginx.modsecurity.config | dict2items) %}
+{{ i.key }} {{ i.value }}
+{% endfor %}
+{% for i in (nginx.modsecurity.rules) | dict2items %}
+SecRule {{ i.value }}
+{% endfor %}
