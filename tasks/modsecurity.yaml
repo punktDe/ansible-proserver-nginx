@@ -25,6 +25,7 @@
       dest: "{{ nginx.prefix.modsecurity.config }}/modsecurity.conf"
 
 - name: Download the OWASP CoreRuleSet {{ nginx.modsecurity.owasp_crs.version }}
+  ignore_errors: "{{ ansible_check_mode }}"
   when: nginx.modsecurity.owasp_crs.enabled
   notify: Restart nginx
   ansible.builtin.unarchive:
@@ -35,6 +36,7 @@
     group: "{{ root_group }}"
 
 - name: Copy the example config into place
+  ignore_errors: "{{ ansible_check_mode }}"
   ansible.builtin.copy:
     dest: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf"
     src: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf.example"
