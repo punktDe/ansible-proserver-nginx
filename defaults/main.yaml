@@ -84,11 +84,12 @@ nginx:
   stub_status_port:
   modsecurity:
     enabled: true
+    dry_run: true
     owasp_crs:
       enabled: true
       version: 3.3.5
     config:
-      SecRuleEngine: DetectionOnly
+      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
       SecRequestBodyAccess: "On"
       SecRequestBodyLimit: 13107200
       SecRequestBodyNoFilesLimit: 131072
