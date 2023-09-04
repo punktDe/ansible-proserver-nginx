@@ -92,7 +92,6 @@ nginx:
       SecRequestBodyAccess: "On"
       SecRequestBodyLimit: 13107200
       SecRequestBodyNoFilesLimit: 131072
-      SecRequestBodyInMemoryLimit: 131072
       SecRequestBodyLimitAction: Reject
       SecRequestBodyJsonDepthLimit: 512
       SecPcreMatchLimit: 1000
@@ -104,8 +103,8 @@ nginx:
       SecTmpDir: /tmp/
       SecDataDir: /tmp/
       SecAuditEngine: RelevantOnly
-      SecAuditLogRelevantStatus: "^(?:5|4(?!04))"
-      SecAuditLogParts: ABIJDEFHZ
+      SecAuditLogRelevantStatus: "\"^(?:5|4(?!04))\""
+      SecAuditLogParts: ABIJDFHZ
       SecAuditLogType: Serial
       SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
       SecArgumentSeparator: "&"

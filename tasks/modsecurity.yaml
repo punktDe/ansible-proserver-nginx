@@ -8,6 +8,7 @@
   loop:
     - "{{ nginx.prefix.modsecurity.config }}"
     - "{{ nginx.prefix.modsecurity.config }}/crs"
+    - "{{ nginx.prefix.modsecurity.log }}"
 
 
 - name: Template the modsecurity configuation parameters
