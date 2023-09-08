@@ -5,7 +5,7 @@ dependencies:
 galaxy_info:
   author: "Punkt.de"
   license: ""
-  description: "Ansible role for Nginx"
+  description: "Nginx role for Proserver"
   role_name: "proserver_nginx"
   namespace: "punktde"
   min_ansible_version: "2.15"
