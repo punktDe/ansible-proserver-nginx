@@ -1,4 +1,5 @@
 ---
 - name: Generate Diffie-Hellman parameters with the size of {{ nginx.dhparam_bits | string }}
+  when: (lookup('env','GITHUB_ACTIONS') | length) == 0
   community.crypto.openssl_dhparam:
     path: "{{ nginx.prefix.config }}/dhparams.pem"
