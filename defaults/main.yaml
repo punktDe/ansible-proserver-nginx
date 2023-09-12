@@ -113,6 +113,15 @@ nginx:
       SecUnicodeMapFile: unicode.mapping 20127
       SecStatusEngine: "Off" # telemetry
       SecAuditLogFormat: json
+    actions:
+      content_types: |
+       "id:900220,\
+        phase:1,\
+        nolog,\
+        pass,\
+        t:none,\
+        setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |text/html| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
+
     rules:
       xml_body_parser: |
         REQUEST_HEADERS:Content-Type "^(?:application(?:/soap\+|/)|text/)xml" \
@@ -145,4 +154,3 @@ nginx:
       tx_flags: |
         TX:/^MSC_/ "!@streq 0" \
         "id:'200005',phase:2,t:none,deny,msg:'ModSecurity internal error flagged: %{MATCHED_VAR_NAME}'
- 

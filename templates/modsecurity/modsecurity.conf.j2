@@ -4,3 +4,7 @@
 {% for i in (nginx.modsecurity.rules) | dict2items %}
 SecRule {{ i.value }}
 {% endfor %}
+{% for i in (nginx.modsecurity.actions) | dict2items %}
+SecAction \
+  {{ i.value }}
+{% endfor %}
