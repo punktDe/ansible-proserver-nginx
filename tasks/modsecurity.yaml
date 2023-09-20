@@ -10,7 +10,6 @@
     - "{{ nginx.prefix.modsecurity.config }}/crs"
     - "{{ nginx.prefix.modsecurity.log }}"
 
-
 - name: Template the modsecurity configuation parameters
   ansible.builtin.template:
     src: "{{ item.src }}"
@@ -24,6 +23,8 @@
       dest: "{{ nginx.prefix.modsecurity.config }}/main.conf"
     - src: modsecurity/modsecurity.conf.j2
       dest: "{{ nginx.prefix.modsecurity.config }}/modsecurity.conf"
+    - src: logrotate.d/modsecurity.conf.j2
+      dest: "{{ nginx.prefix.config | regex_replace('nginx', 'logrotate.d') }}/modsecurity.conf"
 
 - name: Download the OWASP CoreRuleSet {{ nginx.modsecurity.owasp_crs.version }}
   ignore_errors: "{{ ansible_check_mode }}"
