@@ -1,0 +1,11 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Test nginx config
+      changed_when: false
+      ansible.builtin.command:
+        cmd: nginx -t

@@ -1,4 +1,10 @@
 ---
+root_group: >-
+  {%- if ansible_system == 'Linux' and ansible_distribution == 'Ubuntu' -%}
+    root
+  {%- else -%}
+    wheel
+  {%- endif -%}
 nginx_security_headers_default:
     - header: "X-Frame-Options"
       value: "SAMEORIGIN"

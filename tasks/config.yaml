@@ -1,14 +1,23 @@
 ---
 - name: Create nginx drop-in configuration directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
+    owner: root
+    group: "{{ root_group }}"
+    mode: "0755"
   with_items:
     - "{{ nginx.prefix.config }}/include"
     - "{{ nginx.prefix.config }}/http.d"
     - "{{ nginx.prefix.config }}/stream.d"
 
 - name: Template nginx configuration
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: "0644"
   loop:
     - src: nginx.conf
       dest: "{{ nginx.prefix.config }}/nginx.conf"
@@ -24,20 +33,20 @@
       dest: "{{ nginx.prefix.config }}/include/proxy_headers.conf"
     - src: include/security_headers.conf
       dest: "{{ nginx.prefix.config }}/include/security_headers.conf"
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
-  file:
+  ansible.builtin.file:
     dest: "{{ item.link }}"
     src: "{{ item.file }}"
     state: link
     force: yes
+    mode: "0644"
+    owner: root
+    group: "{{ root_group }}"
   loop_control:
-    label:  "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
-  with_items:
+    label: "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
+  loop:
     - link: "{{ nginx.prefix.config }}/https_params.conf"
       file: "include/https_params.conf"
     - link: "{{ nginx.prefix.config }}/https"

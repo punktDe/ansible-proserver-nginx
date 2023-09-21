@@ -1,0 +1,6 @@
+---
+roles:
+  - src: https://github.com/punktDe/ansible-proserver-dehydrated
+    name: dehydrated
+    version: master
+    scm: git
