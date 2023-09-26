@@ -1,11 +1,11 @@
-# apache-prosever-apache
-An Ansible role that sets up Apache on a Proserver.
+# apache-prosever-nginx
+An Ansible role that sets up the Nginx web server on a Proserver.
 
 ## Configuration options
-### Security headers
+### security_headers
 The default security headers shipped with this role are as follows:
 
-```
+```yaml
 nginx_security_headers_default:
     - header: "X-Frame-Options"
       value: "SAMEORIGIN"
@@ -30,7 +30,7 @@ nginx_security_headers_default:
 
 You can use the `nginx.security_headers` variable to either overwrite the values of the default headers, or define new ones. The two variables (`nginx_security_headers_default` and `nginx.security_headers`) will then be merged and templated to `{{ nginx.prefix.config }}/include/security_headers.conf`.
 
-```
+```yaml
 nginx:
     security_headers:
         # Will override the default Content-Security-Policy
@@ -42,3 +42,25 @@ nginx:
           value: "geolocation=(self)"
           always: yes
 ```
+
+### prefix
+`config`: The configuration directory for Nginx. Defaults to `/etc/nginx` for Linux and `/usr/local/etc/nginx` for FreeBSD.
+
+`log`: The directory for Nginx logs
+
+```yaml
+nginx:
+    prefix:
+        config: >-
+          {%- if ansible_system == 'Linux' -%}
+            /etc/nginx
+          {%- else -%}
+            /usr/local/etc/nginx
+          {%- endif -%}
+        log: /var/log/nginx
+```
+
+### worker_processes
+
+
+
