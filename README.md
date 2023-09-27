@@ -243,3 +243,43 @@ If `private_api` is set, the endpoint will additionally expose group names and a
     }
     {% endif %}
 ```
+
+### dynamic_modules_path, dynamic_modules
+
+`dynamic_modules_path` specifies the path to the modules folder. Defaults to `/usr/lib/nginx/modules` on Linux and `/usr/local/libexec/nginx` on other operating systems:
+
+```yaml
+nginx:
+  dynamic_modules_path: >-
+      {%- if ansible_system == 'Linux' -%}
+        /usr/lib/nginx/modules
+      {%- else -%}
+        /usr/local/libexec/nginx
+      {%- endif -%}
+```
+
+`dynamic_modules` speficies the modules to be loaded. The `ngx_http_headers_more_filter_modules.so` is only loaded on Linux, whereas the `ngx_stream_module.so` is loaded by default on all operating systems:
+
+```yaml
+nginx:
+  dynamic_modules:
+    ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
+    ngx_stream_module.so: no
+```
+
+### htpasswd
+
+The `httpasswd` parameter allows you to specify basic auth credentials and include them in your configurations. By default, no credentials are specified. 
+
+Example:
+```yaml
+nginx:
+  htpasswd:
+    example: # this value is arbitrary
+      user: password
+```
+
+The credentials are provisioned to `{{ nginx.prefix.config }}/include` and can then be then used in your templates and configuration files as follows:
+```jinja2
+        auth_basic_user_file {{ nginx.prefix.config }}/include/import-webdav.htpasswd;
+```
