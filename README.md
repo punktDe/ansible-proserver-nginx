@@ -1,5 +1,5 @@
 # apache-prosever-nginx
-An nsible role that sets up the Nginx web server on a Proserver.
+An Ansible role that sets up the Nginx web server on a Proserver.
 
 ## Dependencies
 [ansible-proserver-dehydrated](https://github.com/punktDe/ansible-proserver-dehydrated) is required to manage HTTPS certificates
