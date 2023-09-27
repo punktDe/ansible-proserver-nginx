@@ -269,17 +269,18 @@ nginx:
 
 ### htpasswd
 
-The `httpasswd` parameter allows you to specify basic auth credentials and include them in your configurations. By default, no credentials are specified. 
+The `httpasswd` parameter allows you to specify basic auth credentials and include them in your configurations. By default, no credentials are specified.
 
 Example:
 ```yaml
 nginx:
   htpasswd:
-    example: # this value is arbitrary
+    example: # the file name for the htpasswd file
       user: password
 ```
 
 The credentials are provisioned to `{{ nginx.prefix.config }}/include` and can then be then used in your templates and configuration files as follows:
 ```jinja2
-auth_basic_user_file {{ nginx.prefix.config }}/include/import-webdav.htpasswd;
+auth_basic_user_file {{ nginx.prefix.config }}/include/example.htpasswd;
 ```
+
