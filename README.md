@@ -281,5 +281,5 @@ nginx:
 
 The credentials are provisioned to `{{ nginx.prefix.config }}/include` and can then be then used in your templates and configuration files as follows:
 ```jinja2
-        auth_basic_user_file {{ nginx.prefix.config }}/include/import-webdav.htpasswd;
+auth_basic_user_file {{ nginx.prefix.config }}/include/import-webdav.htpasswd;
 ```
