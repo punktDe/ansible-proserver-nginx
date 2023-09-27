@@ -284,3 +284,12 @@ The credentials are provisioned to `{{ nginx.prefix.config }}/include` and can t
 auth_basic_user_file {{ nginx.prefix.config }}/include/example.htpasswd;
 ```
 
+### stub_status_port
+
+```yaml
+nginx:
+  stub_status_port:
+```
+
+If set, serves a [simple web page](https://nginx.org/en/docs/http/ngx_http_stub_status_module.html) with basic Nginx status data on the specified port.
+
