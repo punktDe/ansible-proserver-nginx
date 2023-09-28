@@ -121,6 +121,13 @@ nginx:
         pass,\
         t:none,\
         setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |text/html| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
+      allowed_methods: |
+       "id:900200,\
+        phase:1,\
+        nolog,\
+        pass,\
+        t:none,\
+        setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
 
     rules:
       xml_body_parser: |
