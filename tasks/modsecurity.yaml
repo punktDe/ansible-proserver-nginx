@@ -21,6 +21,8 @@
   loop:
     - src: modsecurity/main.conf.j2
       dest: "{{ nginx.prefix.modsecurity.config }}/main.conf"
+    - src: modsecurity/neos.conf.j2
+      dest: "{{ nginx.prefix.modsecurity.config }}/neos.conf"
     - src: modsecurity/modsecurity.conf.j2
       dest: "{{ nginx.prefix.modsecurity.config }}/modsecurity.conf"
     - src: logrotate.d/modsecurity.conf.j2
