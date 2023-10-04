@@ -113,51 +113,5 @@ nginx:
       SecUnicodeMapFile: unicode.mapping 20127
       SecStatusEngine: "Off" # telemetry
       SecAuditLogFormat: json
-    actions:
-      content_types: |
-       "id:900220,\
-        phase:1,\
-        nolog,\
-        pass,\
-        t:none,\
-        setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |text/html| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
-      allowed_methods: |
-       "id:900200,\
-        phase:1,\
-        nolog,\
-        pass,\
-        t:none,\
-        setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
-
-    rules:
-      xml_body_parser: |
-        REQUEST_HEADERS:Content-Type "^(?:application(?:/soap\+|/)|text/)xml" \
-        "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
-      json_body_parser: |
-        REQUEST_HEADERS:Content-Type "^application/json" \
-        "id:'200001',phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
-      reqbody_error: |
-        REQBODY_ERROR "!@eq 0" \
-        "id:'200002', phase:2,t:none,log,deny,status:400,msg:'Failed to parse request body.',logdata:'%{reqbody_error_msg}',severity:2"
-      multipart_strict_error: |
-        MULTIPART_STRICT_ERROR "!@eq 0" \
-        "id:'200003',phase:2,t:none,log,deny,status:400, \
-        msg:'Multipart request body failed strict validation: \
-        PE %{REQBODY_PROCESSOR_ERROR}, \
-        BQ %{MULTIPART_BOUNDARY_QUOTED}, \
-        BW %{MULTIPART_BOUNDARY_WHITESPACE}, \
-        DB %{MULTIPART_DATA_BEFORE}, \
-        DA %{MULTIPART_DATA_AFTER}, \
-        HF %{MULTIPART_HEADER_FOLDING}, \
-        LF %{MULTIPART_LF_LINE}, \
-        SM %{MULTIPART_MISSING_SEMICOLON}, \
-        IQ %{MULTIPART_INVALID_QUOTING}, \
-        IP %{MULTIPART_INVALID_PART}, \
-        IH %{MULTIPART_INVALID_HEADER_FOLDING}, \
-        FL %{MULTIPART_FILE_LIMIT_EXCEEDED}'"
-      multipart_unmatched_boundary: |
-        MULTIPART_UNMATCHED_BOUNDARY "!@eq 0" \
-        "id:'200004',phase:2,t:none,log,deny,msg:'Multipart parser detected a possible unmatched boundary.'"
-      tx_flags: |
-        TX:/^MSC_/ "!@streq 0" \
-        "id:'200005',phase:2,t:none,deny,msg:'ModSecurity internal error flagged: %{MATCHED_VAR_NAME}'
+    actions: {}
+    rules: {}
