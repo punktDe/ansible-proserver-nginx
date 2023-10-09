@@ -13,6 +13,9 @@ nginx_security_headers_default:
   - header: "X-Frame-Options"
     value: "SAMEORIGIN"
     always: yes
+  - header: "Permissions-Policy"
+    value: "camera=(self), display-capture=(self), fullscreen=(self), geolocation=(self), microphone=(self), web-share=(self)"
+    always: yes
   - header: "X-Content-Type-Options"
     value: "nosniff"
     always: yes
