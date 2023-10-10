@@ -1,9 +1,13 @@
-SecRule REQUEST_URI "^neos.*$" \
+SecRule REQUEST_URI "@beginsWith /neos" \
   "id:1002,\
   phase:1,\
   pass,\
   nolog,\
-  ctl:ruleRemoveById=941160"
+  ctl:ruleRemoveById=941160,\
+  ctl:ruleRemoveById=941310,\
+  ctl:ruleRemoveById=932115"
+
+
 
 SecAction \
   "id:900220,\
@@ -20,3 +24,4 @@ SecAction \
  pass,\
  t:none,\
  setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+
