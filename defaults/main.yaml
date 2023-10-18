@@ -92,7 +92,7 @@ nginx:
     config:
       SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
       SecRequestBodyAccess: "On"
-      SecRequestBodyLimit: {{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}
+      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
       SecRequestBodyNoFilesLimit: 131072
       SecRequestBodyLimitAction: Reject
       SecRequestBodyJsonDepthLimit: 512
