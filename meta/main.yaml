@@ -1,3 +1,11 @@
 ---
 dependencies:
   - role: dehydrated
+
+galaxy_info:
+  author: "Punkt.de"
+  license: ""
+  description: "Nginx role for Proserver"
+  role_name: "proserver_nginx"
+  namespace: "punktde"
+  min_ansible_version: "2.15"

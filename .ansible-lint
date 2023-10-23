@@ -1,0 +1,11 @@
+---
+skip_list:
+  - 'risky-shell-pipe'
+  - 'role-name'
+
+warn_list:
+  - name[template]
+  - package-latest
+  - unnamed-task
+  - command-instead-of-shell
+  - no-handler
