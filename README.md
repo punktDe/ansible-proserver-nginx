@@ -1,4 +1,4 @@
-# apache-prosever-nginx
+# ansible-prosever-nginx
 An Ansible role that sets up the Nginx web server on a Proserver.
 
 ## Dependencies
