@@ -84,7 +84,7 @@ nginx:
   htpasswd: {}
   stub_status_port:
   modsecurity:
-    enabled: true
+    enabled: false
     dry_run: true
     owasp_crs:
       enabled: true
