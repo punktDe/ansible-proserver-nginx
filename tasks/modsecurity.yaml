@@ -45,3 +45,6 @@
     dest: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf"
     src: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf.example"
     remote_src: yes
+    owner: root
+    group: "{{ root_group }}"
+    mode: "0644"
