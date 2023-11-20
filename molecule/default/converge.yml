@@ -1,6 +1,8 @@
 ---
 - name: Converge
   hosts: all
+  environment:
+    GITHUB_ACTIONS: "maybe"
   tasks:
     - name: "Include ansible-proserver-nginx"
       ansible.builtin.include_role:

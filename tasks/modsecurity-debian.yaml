@@ -1,0 +1,8 @@
+---
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Check whether a package called foobar is installed
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.packages['nginx'] }}"
