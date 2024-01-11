@@ -27,6 +27,10 @@
       dest: "{{ nginx.prefix.modsecurity.config }}/modsecurity.conf"
     - src: logrotate.d/modsecurity.conf.j2
       dest: "{{ nginx.prefix.config | regex_replace('nginx', 'logrotate.d') }}/modsecurity.conf"
+    - src: include/modsecurity.conf
+      dest: "{{ nginx.prefix.config }}/modsecurity.conf"
+
+
 
 - name: Download the OWASP CoreRuleSet {{ nginx.modsecurity.owasp_crs.version }}
   ignore_errors: "{{ ansible_check_mode }}"

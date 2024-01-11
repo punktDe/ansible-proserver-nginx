@@ -13,7 +13,9 @@
 
 - name: Set up Modsecurity on Ubuntu/Debian
   ansible.builtin.include_tasks: modsecurity-linux.yaml
-  when: nginx.modsecurity.enabled and ansible_os_family == "Debian"
+  when: 
+    - nginx.modsecurity.enabled
+    - ansible_os_family == "Debian"
 
 - name: Check for modsecurity support
   register: modsecurity_module
@@ -22,4 +24,6 @@
 
 - name: Set up Modsecurity
   ansible.builtin.include_tasks: modsecurity.yaml
-  when: nginx.modsecurity.enabled and modsecurity_module.stat.exists
+  when: 
+    - nginx.modsecurity.enabled
+    - modsecurity_module.stat.exists
