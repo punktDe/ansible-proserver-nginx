@@ -37,15 +37,15 @@ nginx:
 Similarly, `actions` lets you define ModSecurity actions in the following format:
 ```yaml
 nginx:
-    modsecurity:
-      actions:
-        allow_neos_methods: |
-          "id:900200,\
-           phase:1,\
-           nolog,\
-           pass,\
-           t:none,\
-           setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+  modsecurity:
+    actions:
+      allow_neos_methods: |
+        "id:900200,\
+         phase:1,\
+         nolog,\
+         pass,\
+         t:none,\
+         setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
 ```
 
 
