@@ -1,0 +1,9 @@
+# Include the recommended configuration
+Include {{ nginx.prefix.modsecurity.config }}/modsecurity.conf
+Include {{ nginx.prefix.modsecurity.config }}/neos.conf
+ 
+{% if nginx.modsecurity.owasp_crs.enabled %}
+# OWASP CRS v3 rules
+Include {{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf
+Include {{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/rules/*.conf
+{% endif %}

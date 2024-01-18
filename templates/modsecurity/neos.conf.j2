@@ -1,0 +1,33 @@
+SecRule REQUEST_URI "@beginsWith /neos" \
+  "id:1002,\
+  phase:1,\
+  pass,\
+  nolog,\
+  ctl:ruleRemoveById=941160,\
+  ctl:ruleRemoveById=941310,\
+  ctl:ruleRemoveById=932100,\
+  ctl:ruleRemoveById=932110,\
+  ctl:ruleRemoveById=921110,\
+  ctl:ruleRemoveById=933160,\
+  ctl:ruleRemoveById=930120,\
+  ctl:ruleRemoveById=941100,\
+  ctl:ruleRemoveById=941140,\
+  ctl:ruleRemoveById=941190,\
+  ctl:ruleRemoveById=932115"
+
+SecAction \
+  "id:900220,\
+ phase:1,\
+ nolog,\
+ pass,\
+ t:none,\
+ setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |text/html| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
+
+SecAction \
+  "id:900200,\
+ phase:1,\
+ nolog,\
+ pass,\
+ t:none,\
+ setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+

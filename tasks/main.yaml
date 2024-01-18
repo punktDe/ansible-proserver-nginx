@@ -10,3 +10,20 @@
 
 - name: Manage htpasswd files
   ansible.builtin.include_tasks: htpasswd.yaml
+
+- name: Set up Modsecurity on Ubuntu/Debian
+  ansible.builtin.include_tasks: modsecurity-debian.yaml
+  when:
+    - nginx.modsecurity.enabled
+    - ansible_os_family == "Debian"
+
+- name: Check for modsecurity support
+  register: modsecurity_module
+  ansible.builtin.stat:
+    path: "{{ nginx.dynamic_modules_path }}/ngx_http_modsecurity_module.so"
+
+- name: Set up Modsecurity
+  ansible.builtin.include_tasks: modsecurity.yaml
+  when:
+    - nginx.modsecurity.enabled
+    - modsecurity_module.stat.exists

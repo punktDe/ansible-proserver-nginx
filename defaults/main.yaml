@@ -9,6 +9,9 @@ nginx:
         /usr/local/etc/nginx
       {%- endif -%}
     log: /var/log/nginx
+    modsecurity:
+      config: "/usr/local/etc/modsecurity"
+      log: /var/log/modsecurity
   worker_processes: 8
   user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
   nameservers:
@@ -20,6 +23,7 @@ nginx:
   server_names_hash_bucket_size:
   dhparam_bits: 4096
   moved_permanently: {}
+  client_max_body_size: 100M
   redirects: {}
   real_ip_header: X-Real-IP
   set_real_ip_from: {}
@@ -69,6 +73,40 @@ nginx:
       {%- endif -%}
   dynamic_modules:
     ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
-    ngx_stream_module.so: no
+    ngx_http_modsecurity_module.so: "{{ true if vars.nginx.modsecurity.enabled else false }}"
+    ngx_stream_module.so: false
   htpasswd: {}
   stub_status_port:
+  modsecurity:
+    enabled: false
+    dry_run: true
+    owasp_crs:
+      enabled: true
+      version: 3.3.5
+    config:
+      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
+      SecRequestBodyAccess: "On"
+      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
+      SecRequestBodyNoFilesLimit: 131072
+      SecRequestBodyLimitAction: Reject
+      SecRequestBodyJsonDepthLimit: 512
+      SecPcreMatchLimit: 1000
+      SecPcreMatchLimitRecursion: 1000
+      SecResponseBodyAccess: "On"
+      SecResponseBodyMimeType: text/plain text/html text/xml
+      SecResponseBodyLimit: 524288
+      SecResponseBodyLimitAction: ProcessPartial
+      SecTmpDir: /tmp/
+      SecDataDir: /tmp/
+      SecAuditEngine: RelevantOnly
+      SecAuditLogRelevantStatus: "\"^(?:5|4(?!04))\""
+      SecAuditLogParts: ABIJDFHZ
+      SecAuditLogType: Serial
+      SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
+      SecArgumentSeparator: "&"
+      SecCookieFormat: 0
+      SecUnicodeMapFile: unicode.mapping 20127
+      SecStatusEngine: "Off" # telemetry
+      SecAuditLogFormat: json
+    actions: {}
+    rules: {}
