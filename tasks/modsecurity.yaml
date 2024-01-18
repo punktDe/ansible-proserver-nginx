@@ -3,7 +3,6 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    group: "{{ root_group }}"
     mode: "0755"
   loop:
     - "{{ nginx.prefix.modsecurity.config }}"
@@ -14,7 +13,6 @@
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    group: "{{ root_group }}"
     owner: root
     mode: "0644"
   notify: Restart nginx
@@ -39,7 +37,6 @@
     remote_src: yes
     dest: "{{ nginx.prefix.modsecurity.config }}/crs"
     owner: root
-    group: "{{ root_group }}"
 
 - name: Copy the example config into place
   ignore_errors: "{{ ansible_check_mode }}"
@@ -48,5 +45,4 @@
     src: "{{ nginx.prefix.modsecurity.config }}/crs/coreruleset-{{ nginx.modsecurity.owasp_crs.version }}/crs-setup.conf.example"
     remote_src: yes
     owner: root
-    group: "{{ root_group }}"
     mode: "0644"

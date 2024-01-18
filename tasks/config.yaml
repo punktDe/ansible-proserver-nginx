@@ -4,7 +4,6 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    group: "{{ root_group }}"
     mode: "0755"
   with_items:
     - "{{ nginx.prefix.config }}/include"
@@ -16,7 +15,6 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
-    group: "{{ root_group }}"
     mode: "0644"
   loop:
     - src: nginx.conf
@@ -43,7 +41,6 @@
     force: yes
     mode: "0644"
     owner: root
-    group: "{{ root_group }}"
   loop_control:
     label: "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
   loop:
