@@ -5,6 +5,85 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 [ansible-proserver-dehydrated](https://github.com/punktDe/ansible-proserver-dehydrated) is required to manage HTTPS certificates
 
 ## Configuration options
+### modsecurity
+Starting with the version 1.1.0, this role is capable of configuring [ModSecurity v3](https://github.com/SpiderLabs/ModSecurity) with [OWASP Core Rule Set](https://owasp.org/www-project-modsecurity-core-rule-set/).
+
+The ModSecurity functionality is disabled by default, but can be activated by setting the variable `nginx.modsecurity.enabled` to `yes` or `true`
+
+Default configuration:
+```yaml
+nginx:
+  modsecurity:
+    enabled: false
+    dry_run: true
+    owasp_crs:
+      enabled: true
+      version: 3.3.5
+    config:
+      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
+      SecRequestBodyAccess: "On"
+      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
+      SecRequestBodyNoFilesLimit: 131072
+      SecRequestBodyLimitAction: Reject
+      SecRequestBodyJsonDepthLimit: 512
+      SecPcreMatchLimit: 1000
+      SecPcreMatchLimitRecursion: 1000
+      SecResponseBodyAccess: "On"
+      SecResponseBodyMimeType: text/plain text/html text/xml
+      SecResponseBodyLimit: 524288
+      SecResponseBodyLimitAction: ProcessPartial
+      SecTmpDir: /tmp/
+      SecDataDir: /tmp/
+      SecAuditEngine: RelevantOnly
+      SecAuditLogRelevantStatus: "\"^(?:5|4(?!04))\""
+      SecAuditLogParts: ABIJDFHZ
+      SecAuditLogType: Serial
+      SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
+      SecArgumentSeparator: "&"
+      SecCookieFormat: 0
+      SecUnicodeMapFile: unicode.mapping 20127
+      SecStatusEngine: "Off" # telemetry
+      SecAuditLogFormat: json
+    actions: {}
+      rules: {}
+```
+
+By default, ModSecurity is configured with the `DetectionOnly` engine. Security incidents will be logged to the file path set by `nginx.modsecurity.config.SecAuditLog`, but no actions will be taken.
+
+Setting the `dry_run` variable to `no` or `false` switches the mode to `On`. In this case, ModSecurity will actually block the requests that it deems malicious.
+
+We recommend running ModSecurity in the `DetectionOnly` mode and monitoring the logs for false positives for a while, before enabling the blocking functionality.
+
+The configuration options contained in `nginx.modsecurity.config` mostly follow [SpiderLabs' recommended settings](https://github.com/SpiderLabs/ModSecurity/blob/v3/master/modsecurity.conf-recommended)
+
+`rules` lets you define ModSecurity rules to be written to `{{ nginx.prefix.modsecurity.config }}/modsecurity.conf`. For example:
+```yaml
+nginx:
+  modsecurity:
+    rules:
+      import: | # Arbitrary rule name. Will not be used in templates
+        REQUEST_URI "@beginsWith /import.php" \
+        "id:1010,\
+        phase:1,\
+        pass,\
+        nolog,\
+        ctl:ruleRemoveById=920350"
+```
+
+Similarly, `actions` lets you define ModSecurity actions in the following format:
+```
+nginx:
+    modsecurity:
+      actions:
+        allow_neos_methods: |
+          "id:900200,\
+           phase:1,\
+           nolog,\
+           pass,\
+           t:none,\
+           setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+
+
 ### security_headers
 The default security headers shipped with this role are as follows:
 
@@ -137,7 +216,7 @@ nginx:
 
 ### real_ip_header, set_real_ip_from
 
-If your web server is behind a proxy or a load balancer, such as Cloudflare, you will see the Cloudflare proxy IP addresses in your logs, instead of the actual IP addresses of your visitors. 
+If your web server is behind a proxy or a load balancer, such as Cloudflare, you will see the Cloudflare proxy IP addresses in your logs, instead of the actual IP addresses of your visitors.
 
 To fix that, you will need to specify the name of the header that actually carries the origin IP address of the request (`X-Real-IP` by default), as well as the proxy IP addresses that need to be replaced by the original visitors' IPs. For example:
 
