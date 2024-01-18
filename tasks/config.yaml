@@ -29,8 +29,6 @@
       dest: "{{ nginx.prefix.config }}/include/https_params.conf"
     - src: include/letsencrypt.conf
       dest: "{{ nginx.prefix.config }}/include/letsencrypt.conf"
-    - src: include/modsecurity.conf
-      dest: "{{ nginx.prefix.config }}/include/modsecurity.conf"
     - src: include/proxy_headers.conf
       dest: "{{ nginx.prefix.config }}/include/proxy_headers.conf"
     - src: include/security_headers.conf

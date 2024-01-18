@@ -19,6 +19,8 @@
     mode: "0644"
   notify: Restart nginx
   loop:
+    - src: include/modsecurity.conf
+      dest: "{{ nginx.prefix.config }}/include/modsecurity.conf"
     - src: modsecurity/main.conf.j2
       dest: "{{ nginx.prefix.modsecurity.config }}/main.conf"
     - src: modsecurity/neos.conf.j2
