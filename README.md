@@ -35,7 +35,7 @@ nginx:
 ```
 
 Similarly, `actions` lets you define ModSecurity actions in the following format:
-```
+```yaml
 nginx:
     modsecurity:
       actions:
