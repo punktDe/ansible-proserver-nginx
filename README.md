@@ -10,43 +10,7 @@ Starting with the version 1.1.0, this role is capable of configuring [ModSecurit
 
 The ModSecurity functionality is disabled by default, but can be activated by setting the variable `nginx.modsecurity.enabled` to `yes` or `true`
 
-Default configuration:
-```yaml
-nginx:
-  modsecurity:
-    enabled: false
-    dry_run: true
-    owasp_crs:
-      enabled: true
-      version: 3.3.5
-    config:
-      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
-      SecRequestBodyAccess: "On"
-      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
-      SecRequestBodyNoFilesLimit: 131072
-      SecRequestBodyLimitAction: Reject
-      SecRequestBodyJsonDepthLimit: 512
-      SecPcreMatchLimit: 1000
-      SecPcreMatchLimitRecursion: 1000
-      SecResponseBodyAccess: "On"
-      SecResponseBodyMimeType: text/plain text/html text/xml
-      SecResponseBodyLimit: 524288
-      SecResponseBodyLimitAction: ProcessPartial
-      SecTmpDir: /tmp/
-      SecDataDir: /tmp/
-      SecAuditEngine: RelevantOnly
-      SecAuditLogRelevantStatus: "\"^(?:5|4(?!04))\""
-      SecAuditLogParts: ABIJDFHZ
-      SecAuditLogType: Serial
-      SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
-      SecArgumentSeparator: "&"
-      SecCookieFormat: 0
-      SecUnicodeMapFile: unicode.mapping 20127
-      SecStatusEngine: "Off" # telemetry
-      SecAuditLogFormat: json
-    actions: {}
-      rules: {}
-```
+Default configuration can be seen in the [defaults.yaml](https://github.com/punktDe/ansible-proserver-nginx/blob/feature/modsecurity/defaults/main.yaml#L80) file.
 
 By default, ModSecurity is configured with the `DetectionOnly` engine. Security incidents will be logged to the file path set by `nginx.modsecurity.config.SecAuditLog`, but no actions will be taken.
 
@@ -82,6 +46,7 @@ nginx:
            pass,\
            t:none,\
            setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+```
 
 
 ### security_headers
