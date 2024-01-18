@@ -4,6 +4,20 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 ## Dependencies
 [ansible-proserver-dehydrated](https://github.com/punktDe/ansible-proserver-dehydrated) is required to manage HTTPS certificates
 
+## Installation
+See [ROLE_USAGE.md]()
+
+You can use the role in your playbooks by adding the following lines to your `requirements.yml`
+```yaml
+roles:
+  - name: dehydrated # required to manage HTTPS certificates
+    src: https://github.com/punktDe/ansible-proserver-dehydrated
+    version: "1.0.1"
+  - name: nginx
+    src: https://github.com/punktDe/ansible-proserver-nginx
+    version: "1.1.0"
+```
+
 ## Configuration options
 ### modsecurity
 Starting with the version 1.1.0, this role is capable of configuring [ModSecurity v3](https://github.com/SpiderLabs/ModSecurity) with [OWASP Core Rule Set](https://owasp.org/www-project-modsecurity-core-rule-set/).
