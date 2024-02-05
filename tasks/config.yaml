@@ -19,8 +19,6 @@
   loop:
     - src: nginx.conf
       dest: "{{ nginx.prefix.config }}/nginx.conf"
-    - src: http.d/default.conf
-      dest: "{{ nginx.prefix.config }}/http.d/default.conf"
     - src: http.d/moved_permanently.conf
       dest: "{{ nginx.prefix.config }}/http.d/moved_permanently.conf"
     - src: include/https_params.conf
@@ -31,6 +29,15 @@
       dest: "{{ nginx.prefix.config }}/include/proxy_headers.conf"
     - src: include/security_headers.conf
       dest: "{{ nginx.prefix.config }}/include/security_headers.conf"
+  notify: Reload nginx
+
+- name: Template nginx default server configuration
+  when: "nginx.default_server | default(True)"
+  ansible.builtin.template:
+    src: http.d/default.conf
+    dest: "{{ nginx.prefix.config }}/http.d/default.conf"
+    owner: root
+    mode: "0644"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths

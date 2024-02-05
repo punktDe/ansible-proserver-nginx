@@ -22,6 +22,7 @@ nginx:
   server_names_hash_max_size:
   server_names_hash_bucket_size:
   dhparam_bits: 4096
+  default_server: true
   moved_permanently: {}
   client_max_body_size: 100M
   redirects: {}
