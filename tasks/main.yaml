@@ -1,29 +1,36 @@
 ---
-- name: Install nginx
-  ansible.builtin.include_tasks: install.yaml
+- name: Install and configure Nginx
+  when: "nginx_role_executed is not defined"
+  block:
+    - name: Install nginx
+      ansible.builtin.include_tasks: install.yaml
 
-- name: Configure nginx
-  ansible.builtin.include_tasks: config.yaml
+    - name: Configure nginx
+      ansible.builtin.include_tasks: config.yaml
 
-- name: Generate DH Params
-  ansible.builtin.include_tasks: dhparam.yaml
+    - name: Generate DH Params
+      ansible.builtin.include_tasks: dhparam.yaml
 
-- name: Manage htpasswd files
-  ansible.builtin.include_tasks: htpasswd.yaml
+    - name: Manage htpasswd files
+      ansible.builtin.include_tasks: htpasswd.yaml
 
-- name: Set up Modsecurity on Ubuntu/Debian
-  ansible.builtin.include_tasks: modsecurity-debian.yaml
-  when:
-    - nginx.modsecurity.enabled
-    - ansible_os_family == "Debian"
+    - name: Set up Modsecurity on Ubuntu/Debian
+      ansible.builtin.include_tasks: modsecurity-debian.yaml
+      when:
+        - nginx.modsecurity.enabled
+        - ansible_os_family == "Debian"
 
-- name: Check for modsecurity support
-  register: modsecurity_module
-  ansible.builtin.stat:
-    path: "{{ nginx.dynamic_modules_path }}/ngx_http_modsecurity_module.so"
+    - name: Check for modsecurity support
+      register: modsecurity_module
+      ansible.builtin.stat:
+        path: "{{ nginx.dynamic_modules_path }}/ngx_http_modsecurity_module.so"
 
-- name: Set up Modsecurity
-  ansible.builtin.include_tasks: modsecurity.yaml
-  when:
-    - nginx.modsecurity.enabled
-    - modsecurity_module.stat.exists
+    - name: Set up Modsecurity
+      ansible.builtin.include_tasks: modsecurity.yaml
+      when:
+        - nginx.modsecurity.enabled
+        - modsecurity_module.stat.exists
+
+    - name: Set 'role executed' fact
+      ansible.builtin.set_fact:
+        nginx_role_executed: true
