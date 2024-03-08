@@ -111,3 +111,6 @@ nginx:
       SecAuditLogFormat: json
     actions: {}
     rules: {}
+  proxy:
+    hide_headers:
+      - "X-Varnish-Backend"
