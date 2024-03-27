@@ -343,3 +343,29 @@ nginx:
 
 If set, serves a [simple web page](https://nginx.org/en/docs/http/ngx_http_stub_status_module.html) with basic Nginx status data on the specified port.
 
+### security_txt
+
+Adds [RFC9116](https://www.rfc-editor.org/info/rfc9116) compliance. 
+
+```yaml
+nginx:
+  security_txt:
+    Contact:
+    Expires:
+    Encryption:
+    Acknowledgments:
+    Preferred_Languages: en
+    Canonical:
+    Policy:
+    Hiring:
+    CSAF:
+```
+If `Contact` is set, creates a [RFC9116](https://www.rfc-editor.org/info/rfc9116) compliant endpoint.
+The security_txt options match the official security.txt options, with the exception of dashes being replaced with underscores due to YAML limitations. The expiration date is set five years ahead of the year in which the role is executed.
+
+
+This snippet is stored in a dedicated file `/etc/nginx/include/security_txt.conf` and can be included in your nginx server config like this:
+```nginx
+include /etc/nginx/include/security_txt.conf;
+```
+If set, serves a [RFC9116](https://www.rfc-editor.org/info/rfc9116) information under /security.txt and /.well-known/security.txt

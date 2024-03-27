@@ -31,6 +31,18 @@
       dest: "{{ nginx.prefix.config }}/include/security_headers.conf"
   notify: Reload nginx
 
+- name: Template security.txt
+  when: nginx.security_txt.Contact
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    mode: "0644"
+  loop:
+    - src: include/security_txt.conf
+      dest: "{{ nginx.prefix.config }}/include/security_txt.conf"
+  notify: Reload nginx
+
 - name: Template nginx default server configuration
   when: "nginx.default_server | default(True)"
   ansible.builtin.template:
