@@ -114,3 +114,13 @@ nginx:
   proxy:
     hide_headers:
       - "X-Varnish-Backend"
+  security_txt:
+    Contact:
+    Expires: "{{ ansible_date_time.year | int + 5 | int }}-12-31T23:59:00.000Z"
+    Encryption:
+    Acknowledgments:
+    Preferred_Languages: en
+    Canonical:
+    Policy:
+    Hiring:
+    CSAF:
