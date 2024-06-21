@@ -235,7 +235,7 @@ nginx:
 ```
 
 `log_formats` gives you control over the information written to the logs for each format. By default, only the fields in the JSON format are adjusted:
- If you add another format which holds the key 'fields' it is generated like the default format for **json**
+ If you add another format which holds the key **fields** it is generated as **json**
 ```yaml
 nginx:
   log_formats:
