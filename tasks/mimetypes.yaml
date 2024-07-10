@@ -1,0 +1,10 @@
+- name: Override mimetypes
+  ansible.builtin.lineinfile:
+    path: "{{ nginx.prefix.config }}/mime.types"
+    line: "{{ item.value.key }} {{ item.value.value | join(' ') }};"
+    search_string: '{{ item.value.key }}'
+    state: present
+    insertbefore: "}"
+
+  loop: "{{ nginx.mimetypes | dict2items }}"
+  when: item.value.key is defined and item.value.key | length > 0 and item.value.value is defined

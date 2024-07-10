@@ -1,6 +1,8 @@
 # ansible-prosever-nginx
 An Ansible role that sets up the Nginx web server on a Proserver.
 
+[TOC]
+
 ## Dependencies
 [ansible-proserver-dehydrated](https://github.com/punktDe/ansible-proserver-dehydrated) is required to manage HTTPS certificates
 
@@ -369,3 +371,27 @@ This snippet is stored in a dedicated file `/etc/nginx/include/security_txt.conf
 include /etc/nginx/include/security_txt.conf;
 ```
 If set, serves a [RFC9116](https://www.rfc-editor.org/info/rfc9116) information under /security.txt and /.well-known/security.txt
+
+### mimetypes
+
+You can override or add new mimetypes to nginx. 
+key must be the mimetype, value is a list of values which are combined with spaces. 
+If a mimetype is already present it gets **replaced**.
+
+```yaml
+nginx:
+  mimetypes:
+    font-woff2:
+      key: "application/font-woff2"
+      value:
+         - woff2
+```
+
+The previous example generates this line within ./nginx/mime.types
+```
+types {
+    ...
+    application/font-woff2 woff2;
+    ...
+}
+```

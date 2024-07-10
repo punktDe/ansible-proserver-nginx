@@ -124,3 +124,8 @@ nginx:
     Policy:
     Hiring:
     CSAF:
+  mimetypes:
+    font-woff2:
+      key: "application/font-woff2"
+      value:
+        - woff2
