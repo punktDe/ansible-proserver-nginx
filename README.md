@@ -234,8 +234,9 @@ nginx:
   log_format: main
 ```
 
-`log_formats` gives you control over the information written to the logs for each format. By default, only the fields in the JSON format are adjusted:
+`log_formats` gives you control over the information written to the logs for each format. By default, only the fields in the JSON format are adjusted.
 
+If you add another format that holds the key `fields`, it is generated as **json**
 ```yaml
 nginx:
   log_formats:
@@ -262,6 +263,15 @@ nginx:
         connection_requests: $connection_requests
         sent_http_content_type: $sent_http_content_type
         dnt: $dnt
+```
+
+If you want to define a custom non-JSON `log_format`, you must use the key `value` instead:
+
+```yaml
+nginx:
+  log_formats:
+    apm:
+      value: '$host $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for" request_time=$request_time'
 ```
 
 ### ansible_info
