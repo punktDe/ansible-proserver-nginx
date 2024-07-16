@@ -27,3 +27,7 @@
   when:
     - nginx.modsecurity.enabled
     - modsecurity_module.stat.exists
+
+- name: Modify mimetypes
+  ansible.builtin.include_tasks: mimetypes.yaml
+  when: nginx.mimetypes is not string and nginx.mimetypes is iterable and nginx.mimetypes is mapping
