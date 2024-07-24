@@ -13,6 +13,7 @@ nginx:
       config: "/usr/local/etc/modsecurity"
       log: /var/log/modsecurity
   worker_processes: 8
+  worker_rlimit_nofile:
   user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
   nameservers:
     - '[2606:4700:4700::1111]:53'
