@@ -4,6 +4,7 @@ skip_list:
   - 'role-name'
 
 warn_list:
+  - no-changed-when
   - name[template]
   - package-latest
   - unnamed-task
