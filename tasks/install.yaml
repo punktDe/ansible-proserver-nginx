@@ -9,3 +9,9 @@
   when: ansible_system == 'Linux'
   ansible.builtin.package:
     name: nginx
+
+- name: Install nginx dependencies
+  when: ansible_os_family == 'Debian'
+  ansible.builtin.apt:
+    name:
+      - libnginx-mod-stream
