@@ -8,4 +8,4 @@
 
 - name: Set the http2 directive fact depending on the nginx version
   ansible.builtin.set_fact:
-    nginx_separate_http2: "{{ true if nginx_version is version('1.25.1', '>=') else false }}"
+    nginx_separate_http2: "{{ true if nginx_version.stdout is version('1.25.1', '>=') else false }}"
