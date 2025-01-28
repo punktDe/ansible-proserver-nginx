@@ -1,3 +1,4 @@
+---
 - name: Override mimetypes
   ansible.builtin.lineinfile:
     path: "{{ nginx.prefix.config }}/mime.types"

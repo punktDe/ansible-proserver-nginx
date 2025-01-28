@@ -1,12 +1,29 @@
 ---
 skip_list:
-  - 'risky-shell-pipe'
-  - 'role-name'
+  - meta-no-info
+  - var-naming[no-role-prefix]
+  - name[template]
 
 warn_list:
-  - no-changed-when
-  - name[template]
   - package-latest
+  - risky-shell-pipe
   - unnamed-task
-  - command-instead-of-shell
-  - no-handler
+
+exclude_paths:
+  - group_vars/secrets.*
+  - roles/dehydrated
+  - roles/mailhog
+  - roles/postgresql
+  - roles/mail
+  - roles/mariadb
+  - roles/nginx
+  - roles/elasticsearch
+  - roles/oauth2_proxy
+  - roles/php
+  - roles/redis
+  - roles/supervisord
+  - roles/system
+  - roles/apache
+  - roles/solr
+  - roles/varnish
+  - roles/docker

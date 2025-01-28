@@ -1,3 +1,4 @@
+---
 - name: Create modsecurity drop-in configuration directories
   ansible.builtin.file:
     path: "{{ item }}"
