@@ -1,6 +1,7 @@
 ---
 - name: Determine the nginx version
   check_mode: no
+  changed_when: no
   register: nginx_version
   ansible.builtin.shell:
     executable: "{{ '/bin/bash' if ansible_system == 'Linux' else '/usr/local/bin/bash' }}"
