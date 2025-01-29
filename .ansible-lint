@@ -10,20 +10,4 @@ warn_list:
   - unnamed-task
 
 exclude_paths:
-  - group_vars/secrets.*
-  - roles/dehydrated
-  - roles/mailhog
-  - roles/postgresql
-  - roles/mail
-  - roles/mariadb
-  - roles/nginx
-  - roles/elasticsearch
-  - roles/oauth2_proxy
-  - roles/php
-  - roles/redis
-  - roles/supervisord
-  - roles/system
-  - roles/apache
-  - roles/solr
-  - roles/varnish
-  - roles/docker
+  - .ansible/roles
