@@ -2,6 +2,9 @@
 - name: Install nginx
   ansible.builtin.include_tasks: install.yaml
 
+- name: Set the http2 directive fact
+  ansible.builtin.include_tasks: http2.yaml
+
 - name: Configure nginx
   ansible.builtin.include_tasks: config.yaml
 
