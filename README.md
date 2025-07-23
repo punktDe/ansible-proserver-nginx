@@ -403,3 +403,12 @@ types {
     ...
 }
 ```
+
+### APT Package to install (Debian/Ubuntu)
+
+By default the package 'nginx' will be installed. If you require the smaller version 'nginx-light' you can overwrite the default package name.
+
+```yaml
+nginx:
+  package: nginx-light
+```

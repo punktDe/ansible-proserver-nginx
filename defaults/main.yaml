@@ -1,5 +1,6 @@
 ---
 nginx:
+  package:
   security_headers: []
   prefix:
     config: >-
