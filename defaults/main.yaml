@@ -2,6 +2,9 @@
 nginx:
   package: nginx
   security_headers: []
+  log:
+    access: /var/log/nginx/access.log
+    error: /var/log/nginx/error.log
   prefix:
     config: >-
       {%- if ansible_system == 'Linux' -%}
