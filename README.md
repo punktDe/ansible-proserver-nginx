@@ -412,3 +412,14 @@ By default the package 'nginx' will be installed. If you require the smaller ver
 nginx:
   package: nginx-light
 ```
+
+### Map hash sizes
+
+If you include large maps you can encounter errors due to map_hash_bucket_size and map_hash_max_size.  
+If so you can set them with the following configuration.
+
+```yaml
+nginx:
+  map_hash_max_size: 4096
+  map_hash_bucket_size: 256
+```
