@@ -9,3 +9,4 @@ galaxy_info:
   role_name: "proserver_nginx"
   namespace: "punktde"
   min_ansible_version: "2.15"
+  platforms: []

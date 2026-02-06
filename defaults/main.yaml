@@ -4,7 +4,7 @@ nginx:
   security_headers: []
   prefix:
     config: >-
-      {%- if ansible_system == 'Linux' -%}
+      {%- if ansible_facts['system'] == 'Linux' -%}
         /etc/nginx
       {%- else -%}
         /usr/local/etc/nginx
@@ -15,10 +15,10 @@ nginx:
       log: /var/log/modsecurity
   worker_processes: 8
   worker_rlimit_nofile:
-  user: "{{ 'www-data' if ansible_system == 'Linux' else 'www' }}"
+  user: "{{ 'www-data' if ansible_facts['system'] == 'Linux' else 'www' }}"
   nameservers:
-    - '[2606:4700:4700::1111]:53'
-    - '[2606:4700:4700::1001]:53'
+    - "[2606:4700:4700::1111]:53"
+    - "[2606:4700:4700::1001]:53"
   nameservers_valid: 300s
   nameservers_ipv6: "on"
   server_names_hash_max_size:
@@ -31,7 +31,7 @@ nginx:
   real_ip_header: X-Real-IP
   set_real_ip_from: {}
   proxy_ssl_trusted_certificate: >-
-    {%- if ansible_system == 'Linux' -%}
+    {%- if ansible_facts['system'] == 'Linux' -%}
       /etc/ssl/certs/ca-certificates.crt
     {%- else -%}
       /usr/local/share/certs/ca-root-nss.crt
@@ -69,14 +69,14 @@ nginx:
     server_name:
     private_api:
   dynamic_modules_path: >-
-      {%- if ansible_system == 'Linux' -%}
-        /usr/lib/nginx/modules
-      {%- else -%}
-        /usr/local/libexec/nginx
-      {%- endif -%}
+    {%- if ansible_facts['system'] == 'Linux' -%}
+      /usr/lib/nginx/modules
+    {%- else -%}
+      /usr/local/libexec/nginx
+    {%- endif -%}
   dynamic_modules:
-    ngx_http_headers_more_filter_module.so: "{{ false if ansible_system == 'Linux' else true }}"
-    ngx_http_modsecurity_module.so: "{{ true if vars.nginx.modsecurity.enabled else false }}"
+    ngx_http_headers_more_filter_module.so: "{{ false if ansible_facts['system'] == 'Linux' else true }}"
+    ngx_http_modsecurity_module.so: "{{ true if nginx.modsecurity.enabled else false }}"
     ngx_stream_module.so: false
   htpasswd: {}
   stub_status_port:
@@ -87,9 +87,9 @@ nginx:
       enabled: true
       version: 3.3.5
     config:
-      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
+      SecRuleEngine: "{{ 'DetectionOnly' if nginx.modsecurity.dry_run else 'On' }}"
       SecRequestBodyAccess: "On"
-      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
+      SecRequestBodyLimit: "{{ nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
       SecRequestBodyNoFilesLimit: 131072
       SecRequestBodyLimitAction: Reject
       SecRequestBodyJsonDepthLimit: 512
@@ -102,10 +102,10 @@ nginx:
       SecTmpDir: /tmp/
       SecDataDir: /tmp/
       SecAuditEngine: RelevantOnly
-      SecAuditLogRelevantStatus: "\"^(?:5|4(?!04))\""
+      SecAuditLogRelevantStatus: '"^(?:5|4(?!04))"'
       SecAuditLogParts: ABIJDFHZ
       SecAuditLogType: Serial
-      SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
+      SecAuditLog: "{{ nginx.prefix.modsecurity.log }}/audit.log"
       SecArgumentSeparator: "&"
       SecCookieFormat: 0
       SecUnicodeMapFile: unicode.mapping 20127
@@ -118,7 +118,7 @@ nginx:
       - "X-Varnish-Backend"
   security_txt:
     Contact:
-    Expires: "{{ ansible_date_time.year | int + 5 | int }}-12-31T23:59:00.000Z"
+    Expires: "{{ ansible_facts['date_time']['year'] | int + 5 | int }}-12-31T23:59:00.000Z"
     Encryption:
     Acknowledgments:
     Preferred_Languages: en
