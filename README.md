@@ -12,7 +12,7 @@ Nginx role for Proserver
 
 ## Supported Operating Systems
 
-- Debian 12
+- Debian 12, 13
 - Ubuntu 24.04, 22.04
 - FreeBSD [Proserver](https://infrastructure.punkt.de/de/produkte/proserver.html)
 
