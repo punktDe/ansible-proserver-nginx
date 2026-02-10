@@ -5,7 +5,7 @@
     state: directory
     owner: root
     mode: "0755"
-  with_items:
+  loop:
     - "{{ nginx.prefix.config }}/include"
     - "{{ nginx.prefix.config }}/http.d"
     - "{{ nginx.prefix.config }}/stream.d"
@@ -32,7 +32,7 @@
   notify: Reload nginx
 
 - name: Template security.txt
-  when: nginx.security_txt.Contact
+  when: nginx.security_txt.Contact is defined and nginx.security_txt.Contact != None
   ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"

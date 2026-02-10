@@ -1,0 +1,276 @@
+---
+argument_specs:
+  main:
+    short_description: Sets up the Nginx web server on a Proserver.
+    description:
+      - "An Ansible role that sets up the Nginx web server on a Proserver."
+      - "[ansible-proserver-dehydrated](https://github.com/punktDe/ansible-proserver-dehydrated) is required to manage HTTPS certificates."
+    examples: |
+      ### ModSecurity Configuration
+
+      `rules` lets you define ModSecurity rules to be written to `{{ nginx.prefix.modsecurity.config }}/modsecurity.conf`. For example:
+      ```yaml
+      nginx:
+        modsecurity:
+          rules:
+            import: | # Arbitrary rule name. Will not be used in templates
+              REQUEST_URI "@beginsWith /import.php" \
+              "id:1010,\
+              phase:1,\
+              pass,\
+              nolog,\
+              ctl:ruleRemoveById=920350"
+      ```
+
+      Similarly, `actions` lets you define ModSecurity actions:
+      ```yaml
+      nginx:
+        modsecurity:
+          actions:
+            allow_neos_methods: |
+              "id:900200,\
+               phase:1,\
+               nolog,\
+               pass,\
+               t:none,\
+               setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
+      ```
+    options:
+      nginx:
+        type: dict
+        description: Main configuration dictionary for the nginx role.
+        options:
+          package:
+            type: str
+            default: nginx
+            description:
+              - "By default the package 'nginx' will be installed."
+              - "If you require the smaller version 'nginx-light' you can overwrite the default package name."
+          user:
+            type: str
+            description: The user nginx runs as. Defaults to 'www-data' on Linux and 'www' on others.
+          worker_processes:
+            type: int
+            default: 8
+            description: The number of Nginx worker processes to be spawned.
+          worker_rlimit_nofile:
+            type: int
+            description: Changes the limit on the maximum number of open files (RLIMIT_NOFILE) for worker processes.
+          prefix:
+            type: dict
+            description: Paths for configuration and logs.
+            options:
+              config:
+                type: path
+                description: "The configuration directory for Nginx. Defaults to `/etc/nginx` for Linux and `/usr/local/etc/nginx` for FreeBSD."
+              log:
+                type: path
+                default: /var/log/nginx
+                description: "The directory for Nginx logs"
+              modsecurity:
+                type: dict
+                description: ModSecurity paths
+                options:
+                  config:
+                    type: path
+                    default: /usr/local/etc/modsecurity
+                  log:
+                    type: path
+                    default: /var/log/modsecurity
+          nameservers:
+            type: list
+            elements: str
+            default: ["[2606:4700:4700::1111]:53", "[2606:4700:4700::1001]:53"]
+            description: Specifies the resolvers that Nginx will use. Defaults to Cloudflare's IPv6 public DNS.
+          nameservers_valid:
+            type: str
+            default: 300s
+            description: Time for which the resolver results are valid.
+          nameservers_ipv6:
+            type: str
+            default: "on"
+            description: Enables or disables looking up of IPv6 addresses for resolved names.
+          server_names_hash_max_size:
+            type: int
+            description:
+              - "Specifies the max size for the server names hash."
+              - "Adjusting this may be useful if you use multiple long domain names."
+          server_names_hash_bucket_size:
+            type: int
+            description:
+              - "Specifies the bucket size for the server names hash."
+              - "Start with a value of 64 and try increasing by a power of 2 (128, 256...) if you see '[emerg] could not build the server_names_hash'."
+          dhparam_bits:
+            type: int
+            default: 4096
+            description:
+              - "Specifies the size of [Diffie-Hellman](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters) parameters to be generated."
+              - "The default size is set to 4096. Adjust according to your needs as large keys take time to generate."
+          proxy_ssl_trusted_certificate:
+            type: path
+            description: "Specifies the CA certificates that will be used to verify upstream TLS. Defaults to system CA bundle."
+          security_headers:
+            type: list
+            elements: dict
+            default: []
+            description:
+              - "Define or override security headers."
+              - "These are merged with `nginx_security_headers_default` and written to `{{ nginx.prefix.config }}/include/security_headers.conf`."
+              - "Structure: `- header: 'Name', value: 'Val', always: yes`"
+          hsts:
+            type: dict
+            description: "Gives you control over the HSTS policy."
+            options:
+              max_age:
+                type: int
+                default: 31536000
+              include_subdomains:
+                type: bool
+                default: false
+              preload:
+                type: bool
+                default: false
+          default_server:
+            type: bool
+            default: true
+            description: If true, configures a default server block.
+
+          client_max_body_size:
+            type: str
+            default: 100M
+            description: Sets the maximum allowed size of the client request body.
+
+          redirects:
+            type: dict
+            default: {}
+            description:
+              - "Specify HTTP/HTTPS redirects."
+              - "Format: `http://example.com: https://www.example.com`"
+              - "Can be used interchangeably with `moved_permanently`."
+          moved_permanently:
+            type: dict
+            default: {}
+            description:
+              - "Specify redirects with optional status codes."
+              - "Format: `http://example.com: { url: https://..., code: 307 }`"
+          real_ip_header:
+            type: str
+            default: X-Real-IP
+            description: "The header that carries the origin IP address (useful behind proxies like Cloudflare)."
+          set_real_ip_from:
+            type: dict
+            default: {}
+            description: "Dictionary of trusted proxy IP addresses to replace with original visitor IPs. Values are flattened."
+          proxy:
+            type: dict
+            description: "Proxy settings."
+            options:
+              hide_headers:
+                type: list
+                elements: str
+                description: "List of headers to hide from the upstream response."
+          log_format:
+            type: str
+            default: main
+            choices: [main, json]
+            description: "Choose between `main` and `json` log format."
+          log_formats:
+            type: dict
+            description:
+              - "Control information written to logs."
+              - "Keys are format names. Values can have `fields` (for JSON) or `value` (for raw string)."
+          modsecurity:
+            type: dict
+            description:
+              - "Configuration for [ModSecurity v3](https://github.com/SpiderLabs/ModSecurity)."
+              - "Disabled by default. Activate by setting `enabled: true`. recommended to start with `dry_run: true`."
+            options:
+              enabled:
+                type: bool
+                default: false
+                description: Activate ModSecurity.
+              dry_run:
+                type: bool
+                default: true
+                description: "If true, sets SecRuleEngine to 'DetectionOnly'. If false, set to 'On' (blocking)."
+              owasp_crs:
+                type: dict
+                description: OWASP Core Rule Set configuration.
+                options:
+                  enabled:
+                    type: bool
+                    default: true
+                  version:
+                    type: str
+                    default: "3.3.5"
+              config:
+                type: dict
+                description: "Key-value pairs for `modsecurity.conf`. mostly follows SpiderLabs' recommended settings."
+              actions:
+                type: dict
+                default: {}
+                description: "Define custom ModSecurity actions."
+              rules:
+                type: dict
+                default: {}
+                description: "Define ModSecurity rules to be written to `modsecurity.conf`."
+          security_txt:
+            type: dict
+            description:
+              - "Adds [RFC9116](https://www.rfc-editor.org/info/rfc9116) compliance."
+              - "If `Contact` is set, creates a compliant endpoint at `/.well-known/security.txt`."
+            options:
+              Contact:
+                type: str
+                description: Contact information (email, url, etc).
+              Expires:
+                type: str
+                description: Expiration date (defaults to 5 years from now).
+              Encryption:
+                type: str
+              Acknowledgments:
+                type: str
+              Preferred_Languages:
+                type: str
+                default: en
+              Canonical:
+                type: str
+              Policy:
+                type: str
+              Hiring:
+                type: str
+              CSAF:
+                type: str
+          dynamic_modules_path:
+            type: path
+            description: Path to the modules folder.
+          dynamic_modules:
+            type: dict
+            description:
+              - "Specifies which modules to load."
+              - "Example: `ngx_stream_module.so: no`"
+          htpasswd:
+            type: dict
+            default: {}
+            description:
+              - "Specify basic auth credentials."
+              - "Format: `filename: { user: password }`."
+              - "Provisioned to `{{ nginx.prefix.config }}/include`."
+          stub_status_port:
+            type: int
+            description: "If set, serves a stub_status page on this port."
+          mimetypes:
+            type: dict
+            description:
+              - "Override or add new mimetypes."
+              - "Format: `type-name: { key: 'application/x-type', value: ['ext1'] }`"
+          ansible_info:
+            type: dict
+            description: "Expose inventory hostname and other info via JSON."
+            options:
+              server_name:
+                type: str
+                description: Domain name to serve the info on.
+              private_api:
+                type: str
+                description: Location path to expose extended info (groups, endpoints).

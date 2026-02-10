@@ -4,7 +4,7 @@
   changed_when: no
   register: nginx_version
   ansible.builtin.shell:
-    executable: "{{ '/bin/bash' if ansible_system == 'Linux' else '/usr/local/bin/bash' }}"
+    executable: "{{ '/bin/bash' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/bash' }}"
     cmd: nginx -v 2>&1 | grep -o "[0-9]*\\.[0-9]*\\.[0-9]*"
 
 - name: Set the http2 directive fact depending on the nginx version

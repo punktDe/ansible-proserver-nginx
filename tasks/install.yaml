@@ -1,17 +1,17 @@
 ---
 - name: Update apt cache
   changed_when: no
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian'
   ansible.builtin.apt:
     update_cache: yes
 
 - name: Install nginx
-  when: ansible_system == 'Linux'
+  when: ansible_facts["system"] == 'Linux'
   ansible.builtin.package:
     name: "{{ nginx.package }}"
 
 - name: Install nginx dependencies
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts["os_family"] == 'Debian'
   ansible.builtin.apt:
     name:
       - libnginx-mod-stream
