@@ -103,9 +103,10 @@ argument_specs:
           dhparam_bits:
             type: int
             default: 4096
+            choices: [2048, 4096]
             description:
-              - "Specifies the size of [Diffie-Hellman](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters) parameters to be generated."
-              - "The default size is set to 4096. Adjust according to your needs as large keys take time to generate."
+              - "Specifies the size of [Diffie-Hellman](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters) parameters to be used."
+              - "The default size is set to 4096, but you can change it to 2048 if needed."
           proxy_ssl_trusted_certificate:
             type: path
             description: "Specifies the CA certificates that will be used to verify upstream TLS. Defaults to system CA bundle."
