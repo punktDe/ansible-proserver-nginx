@@ -1,5 +1,9 @@
 ---
-- name: Generate Diffie-Hellman parameters with the size of {{ nginx.dhparam_bits | string }} (this will take a long time)
-  when: (lookup('env','GITHUB_ACTIONS') | length) == 0
-  community.crypto.openssl_dhparam:
-    path: "{{ nginx.prefix.config }}/dhparam.pem"
+- name: Install pre-generated Diffie-Hellman parameters (RFC 3526, {{ nginx.dhparam_bits | string }})
+  ansible.builtin.copy:
+    src: dh-{{ nginx.dhparam_bits | string }}-rfc3526.pem
+    dest: "{{ nginx.prefix.config }}/dhparam.pem"
+    owner: root
+    group: "{{ 'root' if ansible_os_family == 'Debian' else 'wheel' }}"
+    mode: "0644"
+  notify: Reload nginx
