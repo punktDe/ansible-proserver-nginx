@@ -100,6 +100,16 @@ argument_specs:
             description:
               - "Specifies the bucket size for the server names hash."
               - "Start with a value of 64 and try increasing by a power of 2 (128, 256...) if you see '[emerg] could not build the server_names_hash'."
+          map_hash_bucket_size:
+            type: int
+            description:
+              - "Specifies the bucket size for map variables hash tables."
+              - "Increase this if Nginx cannot build a map_hash due to long keys."
+          map_hash_max_size:
+            type: int
+            description:
+              - "Specifies the maximum size for map variables hash tables."
+              - "Increase this if you have many entries in map directives."
           dhparam_bits:
             type: int
             default: 4096
