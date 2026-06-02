@@ -35,6 +35,41 @@ argument_specs:
                t:none,\
                setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
       ```
+
+      ### Redirects
+
+      The simplest form of a redirect maps a source URL to a destination URL. The same syntax works for `redirects` and `moved_permanently`:
+      ```yaml
+      nginx:
+        redirects:
+          http://old.example.com: https://www.example.com
+      ```
+
+      To customise the status code or strip the request URI, use the mapping form:
+      ```yaml
+      nginx:
+        moved_permanently:
+          http://old.example.com:
+            url: https://www.example.com
+            code: 307     # defaults to 301
+            uri: false    # defaults to true (appends $request_uri)
+      ```
+
+      To return different redirects for different paths on the same source host, set `locations` to a list of per-path destinations. Each item takes a `location` (matched as an nginx `location` block) and a `dest`, which accepts the same string or mapping form as a top-level destination:
+      ```yaml
+      nginx:
+        redirects:
+          http://old.example.com:
+            locations:
+              - location: /docs
+                dest: https://docs.example.com
+              - location: /api
+                dest:
+                  url: https://api.example.com
+                  code: 302
+                  uri: false
+      ```
+      When `locations` is set, the root `location /` block is not emitted — define an explicit `location /` entry if you also want a catch-all redirect.
     options:
       nginx:
         type: dict
@@ -147,6 +182,8 @@ argument_specs:
             description:
               - "Specify HTTP/HTTPS redirects."
               - "Format: `http://example.com: https://www.example.com`"
+              - "The value may also be a mapping with `url`, `code` (default `301`) and `uri` (default `true`, appends `$request_uri`)."
+              - "To redirect different paths on the same host to different destinations, set `locations` to a list of `{ location, dest }` entries — see the Redirects example."
               - "Can be used interchangeably with `moved_permanently`."
           moved_permanently:
             type: dict
@@ -154,6 +191,8 @@ argument_specs:
             description:
               - "Specify redirects with optional status codes."
               - "Format: `http://example.com: { url: https://..., code: 307 }`"
+              - "Set `locations` on the destination mapping to redirect different paths to different targets — see the Redirects example."
+              - "Can be used interchangeably with `redirects`."
           real_ip_header:
             type: str
             default: X-Real-IP
