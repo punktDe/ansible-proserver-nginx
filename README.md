@@ -44,8 +44,8 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `hsts` | Gives you control over the HSTS policy. | dict of 'hsts' options | no |  |
 | `default_server` | If true, configures a default server block. | bool | no | True |
 | `client_max_body_size` | Sets the maximum allowed size of the client request body. | str | no | 100M |
-| `redirects` | Specify HTTP/HTTPS redirects. Format: `http://example.com: https://www.example.com` Can be used interchangeably with `moved_permanently`. | dict | no |  |
-| `moved_permanently` | Specify redirects with optional status codes. Format: `http://example.com: { url: https://..., code: 307 }` | dict | no |  |
+| `redirects` | Specify HTTP/HTTPS redirects. Format: `http://example.com: https://www.example.com` The value may also be a mapping with `url`, `code` (default `301`) and `uri` (default `true`, appends `$request_uri`). To redirect different paths on the same host to different destinations, set `locations` to a list of `{ location, dest }` entries — see the Redirects example. Can be used interchangeably with `moved_permanently`. | dict | no |  |
+| `moved_permanently` | Specify redirects with optional status codes. Format: `http://example.com: { url: https://..., code: 307 }` Set `locations` on the destination mapping to redirect different paths to different targets — see the Redirects example. Can be used interchangeably with `redirects`. | dict | no |  |
 | `real_ip_header` | The header that carries the origin IP address (useful behind proxies like Cloudflare). | str | no | X-Real-IP |
 | `set_real_ip_from` | Dictionary of trusted proxy IP addresses to replace with original visitor IPs. Values are flattened. | dict | no |  |
 | `proxy` | Proxy settings. | dict of 'proxy' options | no |  |
