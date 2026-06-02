@@ -6,3 +6,4 @@ molecule-plugins
 yamllint
 requests
 aar-doc
+netaddr
