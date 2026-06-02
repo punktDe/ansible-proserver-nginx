@@ -1,4 +1,4 @@
-ansible
+ansible>13
 ansible-lint
 docker
 molecule<25.2.0
@@ -6,3 +6,4 @@ molecule-plugins
 yamllint
 requests
 aar-doc
+netaddr
