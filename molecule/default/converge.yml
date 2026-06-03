@@ -8,9 +8,14 @@
     nginx:
       set_real_ip_from:
         test:
+          - 100.0.2.1
+          - 100.0.2.3
           - 127.0.0.1/32
           - 127.0.0.2/32
           - 127.0.0.3/32
+          - "dead:beef::1"
+          - "dead:beef::2"
+          - "babe:cafe::/48"
   tasks:
     - name: "Include ansible-proserver-nginx"
       ansible.builtin.include_role:
