@@ -76,7 +76,7 @@ nginx:
     {%- endif -%}
   dynamic_modules:
     ngx_http_headers_more_filter_module.so: "{{ false if ansible_facts['system'] == 'Linux' else true }}"
-    ngx_http_modsecurity_module.so: "{{ true if nginx.modsecurity.enabled else false }}"
+    ngx_http_modsecurity_module.so: "{{ true if vars.nginx.modsecurity.enabled else false }}"
     ngx_stream_module.so: false
   htpasswd: {}
   stub_status_port:
@@ -87,9 +87,9 @@ nginx:
       enabled: true
       version: 3.3.5
     config:
-      SecRuleEngine: "{{ 'DetectionOnly' if nginx.modsecurity.dry_run else 'On' }}"
+      SecRuleEngine: "{{ 'DetectionOnly' if vars.nginx.modsecurity.dry_run else 'On' }}"
       SecRequestBodyAccess: "On"
-      SecRequestBodyLimit: "{{ nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
+      SecRequestBodyLimit: "{{ vars.nginx.client_max_body_size | ansible.builtin.human_to_bytes }}"
       SecRequestBodyNoFilesLimit: 131072
       SecRequestBodyLimitAction: Reject
       SecRequestBodyJsonDepthLimit: 512
@@ -105,7 +105,7 @@ nginx:
       SecAuditLogRelevantStatus: '"^(?:5|4(?!04))"'
       SecAuditLogParts: ABIJDFHZ
       SecAuditLogType: Serial
-      SecAuditLog: "{{ nginx.prefix.modsecurity.log }}/audit.log"
+      SecAuditLog: "{{ vars.nginx.prefix.modsecurity.log }}/audit.log"
       SecArgumentSeparator: "&"
       SecCookieFormat: 0
       SecUnicodeMapFile: unicode.mapping 20127
