@@ -169,7 +169,32 @@ argument_specs:
           default_server:
             type: bool
             default: true
-            description: If true, configures a default server block.
+            description:
+              - "If true, configures a default (catch-all) server block."
+              - "BREAKING: the catch-all now answers `444` on every socket
+                 (`:80`, `:443` and, on proserver, the gate64 `[::1]:87`/`[::1]:57`)
+                 instead of falling through to the alphabetically first vhost. Health
+                 checks, uptime probes and monitoring that hit the bare IP address rather
+                 than a hostname will start failing -- switch them to a hostname, or set
+                 this to `false` and ship your own default vhost."
+
+          default_server_certificate:
+            type: str
+            description:
+              - "Certificate served by the HTTPS catch-all (default) server."
+              - "The catch-all has to terminate TLS -- nginx refuses to start on an `ssl`
+                 listener with no certificate -- but it never serves content: every request
+                 is dropped with `444`. It is deliberately NOT the fqdn certificate, so no
+                 real hostname is presented for an unknown SNI."
+              - "Defaults to `fullchain.pem` in the dehydrated role's `prefix.dummy` -- the
+                 standalone dummy certificate it writes when `provide_default_dummy_cert`
+                 is true -- so nothing is generated here. Set this (and
+                 `default_server_certificate_key`) to supply your own."
+          default_server_certificate_key:
+            type: str
+            description:
+              - "Private key for `default_server_certificate`."
+              - "Defaults to `privkey.pem` in the dehydrated role's `prefix.dummy`."
 
           client_max_body_size:
             type: str

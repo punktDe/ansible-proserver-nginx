@@ -9,6 +9,10 @@ collections:
 
 roles:
   - name: dehydrated
+    # TEMPORARY: this branch adds dehydrated.prefix.dummy, which the HTTPS
+    # catch-all in templates/http.d/default.conf needs. Drop this pin once
+    # feat/standalone-dummy-certificate is merged to master.
     src: https://github.com/punktDe/ansible-proserver-dehydrated
+    version: feat/standalone-dummy-certificate
   - name: system
     src: https://github.com/punktDe/ansible-proserver-system
