@@ -180,20 +180,21 @@ argument_specs:
 
           default_server_certificate:
             type: str
-            default: "{{ dehydrated.prefix.dummy }}/fullchain.pem"
             description:
               - "Certificate served by the HTTPS catch-all (default) server."
               - "The catch-all has to terminate TLS -- nginx refuses to start on an `ssl`
                  listener with no certificate -- but it never serves content: every request
                  is dropped with `444`. It is deliberately NOT the fqdn certificate, so no
                  real hostname is presented for an unknown SNI."
-              - "Defaults to the standalone dummy certificate written by the dehydrated
-                 role (`dehydrated.provide_default_dummy_cert`), so nothing is generated
-                 here. Set this (and `default_server_certificate_key`) to supply your own."
+              - "Defaults to `fullchain.pem` in the dehydrated role's `prefix.dummy` -- the
+                 standalone dummy certificate it writes when `provide_default_dummy_cert`
+                 is true -- so nothing is generated here. Set this (and
+                 `default_server_certificate_key`) to supply your own."
           default_server_certificate_key:
             type: str
-            default: "{{ dehydrated.prefix.dummy }}/privkey.pem"
-            description: "Private key for `default_server_certificate`."
+            description:
+              - "Private key for `default_server_certificate`."
+              - "Defaults to `privkey.pem` in the dehydrated role's `prefix.dummy`."
 
           client_max_body_size:
             type: str
