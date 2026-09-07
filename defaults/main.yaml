@@ -25,6 +25,10 @@ nginx:
   server_names_hash_bucket_size:
   dhparam_bits: 4096
   default_server: true
+  # Dummy certificate for the HTTPS catch-all, provided by the dehydrated role
+  # (dehydrated.provide_default_dummy_cert). Point these elsewhere to use your own.
+  default_server_certificate: "{{ dehydrated.prefix.dummy }}/fullchain.pem"
+  default_server_certificate_key: "{{ dehydrated.prefix.dummy }}/privkey.pem"
   moved_permanently: {}
   client_max_body_size: 100M
   redirects: {}

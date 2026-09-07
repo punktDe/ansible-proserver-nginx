@@ -43,6 +43,31 @@
       dest: "{{ nginx.prefix.config }}/include/security_txt.conf"
   notify: Reload nginx
 
+# The HTTPS catch-all has to terminate TLS -- nginx refuses to start on an
+# `ssl` listener with no certificate -- but must not present a real hostname's
+# certificate for an unknown SNI. The dehydrated role (a dependency of this
+# one, so it has already run) writes a standalone dummy pair to
+# dehydrated.prefix.dummy for exactly this; nothing is generated here.
+- name: Check the default server certificate
+  when:
+    - nginx.default_server | default(True)
+    - not ansible_check_mode
+  register: nginx_default_server_cert
+  ansible.builtin.stat:
+    path: "{{ nginx.default_server_certificate }}"
+
+- name: Assert the default server certificate exists
+  when:
+    - nginx.default_server | default(True)
+    - not ansible_check_mode
+  ansible.builtin.assert:
+    that: nginx_default_server_cert.stat.exists
+    fail_msg: >-
+      {{ nginx.default_server_certificate }} is missing, so nginx would fail to
+      start. It is provided by the dehydrated role -- check that
+      dehydrated.provide_default_dummy_cert is enabled, or point
+      nginx.default_server_certificate at a certificate of your own.
+
 - name: Template nginx default server configuration
   when: "nginx.default_server | default(True)"
   ansible.builtin.template:
