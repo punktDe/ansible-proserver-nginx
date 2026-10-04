@@ -246,7 +246,10 @@ argument_specs:
               hide_headers:
                 type: list
                 elements: str
-                description: "List of headers to hide from the upstream response."
+                default: ["X-Varnish-Backend", "X-Powered-By", "X-AspNet-Version", "X-AspNetMvc-Version"]
+                description:
+                  - "List of headers to hide from the upstream response (`proxy_hide_header` and `fastcgi_hide_header`). CIS NGINX Benchmark 2.5.4."
+                  - "Set globally in the `http` block and in each location of the `server()` proxy macro."
           log_format:
             type: str
             default: main

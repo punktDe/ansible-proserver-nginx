@@ -124,6 +124,9 @@ nginx:
   proxy:
     hide_headers:
       - "X-Varnish-Backend"
+      - "X-Powered-By"
+      - "X-AspNet-Version"
+      - "X-AspNetMvc-Version"
   security_txt:
     Contact:
     Expires: "{{ ansible_facts['date_time']['year'] | int + 5 | int }}-12-31T23:59:00.000Z"
