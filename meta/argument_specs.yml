@@ -91,6 +91,14 @@ argument_specs:
           worker_rlimit_nofile:
             type: int
             description: Changes the limit on the maximum number of open files (RLIMIT_NOFILE) for worker processes.
+          timeouts:
+            type: dict
+            description: Connection timeouts, set globally in the `http` block. Override per server or location if needed.
+            options:
+              keepalive:
+                type: str
+                default: 10s
+                description: "`keepalive_timeout`. CIS NGINX Benchmark 2.4.3: 10 seconds or less, but not 0."
           prefix:
             type: dict
             description: Paths for configuration and logs.
