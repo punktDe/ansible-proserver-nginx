@@ -45,7 +45,7 @@ nginx:
       /usr/local/share/certs/ca-root-nss.crt
     {%- endif -%}
   hsts:
-    max_age: 31536000
+    max_age: 63072000
     include_subdomains: no
     preload: no
   log_format: main

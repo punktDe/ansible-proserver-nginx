@@ -191,7 +191,7 @@ argument_specs:
             options:
               max_age:
                 type: int
-                default: 31536000
+                default: 63072000
               include_subdomains:
                 type: bool
                 default: false
