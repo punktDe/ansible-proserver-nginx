@@ -5,5 +5,5 @@
     dest: "{{ nginx.prefix.config }}/dhparam.pem"
     owner: root
     group: "{{ 'root' if ansible_os_family == 'Debian' else 'wheel' }}"
-    mode: "0644"
+    mode: "0640"
   notify: Reload nginx

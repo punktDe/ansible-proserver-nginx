@@ -4,7 +4,9 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    mode: "0755"
+    # nginx workers read htpasswd files from include/ at request time
+    group: "{{ nginx.user }}"
+    mode: "0750"
   loop:
     - "{{ nginx.prefix.config }}/include"
     - "{{ nginx.prefix.config }}/http.d"
@@ -15,7 +17,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
-    mode: "0644"
+    mode: "0640"
   loop:
     - src: nginx.conf
       dest: "{{ nginx.prefix.config }}/nginx.conf"
@@ -39,7 +41,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
-    mode: "0644"
+    mode: "0640"
   loop:
     - src: include/security_txt.conf
       dest: "{{ nginx.prefix.config }}/include/security_txt.conf"
@@ -51,7 +53,7 @@
     src: http.d/default.conf
     dest: "{{ nginx.prefix.config }}/http.d/default.conf"
     owner: root
-    mode: "0644"
+    mode: "0640"
   notify: Reload nginx
 
 - name: Create link for legacy configuration file paths
@@ -60,7 +62,6 @@
     src: "{{ item.file }}"
     state: link
     force: yes
-    mode: "0644"
     owner: root
   loop_control:
     label: "{{ nginx.prefix.config }}/https_params.conf dest={{ item.file }}"
