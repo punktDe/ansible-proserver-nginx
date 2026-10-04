@@ -32,6 +32,7 @@ nginx:
   map_hash_bucket_size:
   dhparam_bits: 4096
   default_server: true
+  deny_hidden_files: true
   moved_permanently: {}
   client_max_body_size: 100M
   redirects: {}

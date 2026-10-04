@@ -202,6 +202,12 @@ argument_specs:
             type: bool
             default: true
             description: If true, configures a default server block.
+          deny_hidden_files:
+            type: bool
+            default: true
+            description:
+              - "Deny access to hidden files (e.g. `.git`, `.env`), except `/.well-known/`. CIS NGINX Benchmark 2.5.3."
+              - "Used by the default server and the `server()` proxy macro. Add `include {{ nginx.prefix.config }}/include/deny_hidden.conf;` to your own server blocks."
 
           client_max_body_size:
             type: str
