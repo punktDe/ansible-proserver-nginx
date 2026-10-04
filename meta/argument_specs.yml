@@ -255,6 +255,11 @@ argument_specs:
             default: main
             choices: [main, json]
             description: "Choose between `main` and `json` log format."
+          error_log_level:
+            type: str
+            default: notice
+            choices: [debug, info, notice, warn, error, crit, alert, emerg]
+            description: "Minimum severity written to the error log. CIS NGINX Benchmark 3.3 recommends `info` or `notice`."
           log_formats:
             type: dict
             description:

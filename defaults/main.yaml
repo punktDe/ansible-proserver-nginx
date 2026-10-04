@@ -49,6 +49,7 @@ nginx:
     include_subdomains: no
     preload: no
   log_format: main
+  error_log_level: notice
   log_formats:
     json:
       fields:
