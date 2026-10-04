@@ -99,6 +99,20 @@ argument_specs:
                 type: str
                 default: 10s
                 description: "`keepalive_timeout`. CIS NGINX Benchmark 2.4.3: 10 seconds or less, but not 0."
+              send:
+                type: str
+                default: 10s
+                description: "`send_timeout`. CIS NGINX Benchmark 2.4.4: 10 seconds or less, but not 0."
+              client_header:
+                type: str
+                default: 15s
+                description: "`client_header_timeout`. CIS NGINX Benchmark 5.2.1."
+              client_body:
+                type: str
+                default: 15s
+                description:
+                  - "`client_body_timeout`. CIS NGINX Benchmark 5.2.1."
+                  - "This is the time between two successive reads, not for the whole upload. Raise it in upload locations on slow links."
           prefix:
             type: dict
             description: Paths for configuration and logs.

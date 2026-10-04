@@ -17,6 +17,9 @@ nginx:
   worker_rlimit_nofile:
   timeouts:
     keepalive: 10s
+    send: 10s
+    client_header: 15s
+    client_body: 15s
   user: "{{ 'www-data' if ansible_facts['system'] == 'Linux' else 'www' }}"
   nameservers:
     - "[2606:4700:4700::1111]:53"
