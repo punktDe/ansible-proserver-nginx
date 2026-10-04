@@ -10,3 +10,7 @@
 - name: Set the http2 directive fact depending on the nginx version
   ansible.builtin.set_fact:
     nginx_separate_http2: "{{ true if nginx_version.stdout is version('1.25.1', '>=') else false }}"
+
+- name: Set the ssl_reject_handshake fact depending on the nginx version
+  ansible.builtin.set_fact:
+    nginx_ssl_reject_handshake: "{{ nginx_version.stdout is version('1.19.4', '>=') }}"
