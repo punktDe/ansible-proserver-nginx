@@ -4,8 +4,99 @@
 - name: Verify
   hosts: all
   gather_facts: false
+  vars:
+    nginx_config: /etc/nginx
+    test_root: /var/www/molecule
   tasks:
     - name: Test nginx config
       changed_when: false
       ansible.builtin.command:
         cmd: nginx -t
+
+    # CIS NGINX Benchmark 2.3.2
+    - name: Stat nginx configuration
+      register: config_stat
+      loop:
+        - "{{ nginx_config }}/nginx.conf"
+        - "{{ nginx_config }}/include"
+      ansible.builtin.stat:
+        path: "{{ item }}"
+
+    - name: Assert restricted permissions on nginx configuration
+      loop: "{{ config_stat.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+      ansible.builtin.assert:
+        that: >-
+          [item.stat.mode, item.stat.gr_name] == (['0750', 'www-data'] if item.stat.isdir else ['0640', 'root'])
+        fail_msg: "{{ item.item }} has mode {{ item.stat.mode }} and group {{ item.stat.gr_name }}"
+
+    # CIS NGINX Benchmark 2.4.2
+    - name: Determine the nginx version
+      changed_when: false
+      register: nginx_version
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: set -o pipefail && nginx -v 2>&1 | grep -o "[0-9]*\\.[0-9]*\\.[0-9]*"
+
+    - name: Open a TLS connection for an unknown host name
+      when: nginx_version.stdout is version('1.19.4', '>=')
+      changed_when: false
+      failed_when: "'UNRECOGNIZED_NAME' not in unknown_host.stdout"
+      register: unknown_host
+      ansible.builtin.shell:
+        cmd: |
+          python3 - <<'EOF'
+          import socket, ssl
+          context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+          context.check_hostname = False
+          context.verify_mode = ssl.CERT_NONE
+          try:
+              context.wrap_socket(socket.create_connection(("127.0.0.1", 443)), server_hostname="unknown.invalid")
+              print("HANDSHAKE_ACCEPTED")
+          except ssl.SSLError as e:
+              print(e)
+          EOF
+
+    # CIS NGINX Benchmark 2.5.3
+    - name: Create test directories for hidden file access
+      loop: [.git, sub, .well-known]
+      ansible.builtin.file:
+        path: "{{ test_root }}/{{ item }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create test files for hidden file access
+      loop: [.git/config, sub/.env, .well-known/test, index.html]
+      ansible.builtin.copy:
+        content: "test\n"
+        dest: "{{ test_root }}/{{ item }}"
+        mode: "0644"
+
+    - name: Create a test server including deny_hidden.conf
+      register: test_server
+      ansible.builtin.copy:
+        dest: "{{ nginx_config }}/http.d/zz-molecule-test.conf"
+        mode: "0640"
+        content: |
+          server {
+              listen 127.0.0.1:8080;
+              root {{ test_root }};
+              include {{ nginx_config }}/include/deny_hidden.conf;
+          }
+
+    - name: Reload nginx # noqa: no-handler
+      when: test_server.changed
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+
+    - name: Check access to hidden and regular files
+      loop:
+        - {path: /.git/config, status: 403}
+        - {path: /sub/.env, status: 403}
+        - {path: /.well-known/test, status: 200}
+        - {path: /index.html, status: 200}
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:8080{{ item.path }}"
+        status_code: "{{ item.status }}"
