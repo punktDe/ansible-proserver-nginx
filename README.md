@@ -32,6 +32,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `user` | The user nginx runs as. Defaults to 'www-data' on Linux and 'www' on others. | str | no |  |
 | `worker_processes` | The number of Nginx worker processes to be spawned. | int | no | `8` |
 | `worker_rlimit_nofile` | Changes the limit on the maximum number of open files (RLIMIT_NOFILE) for worker processes. | int | no |  |
+| `timeouts` | Connection timeouts, set globally in the `http` block. Override per server or location if needed. | dict of `timeouts` [options](#options-for-main--nginx--timeouts) | no |  |
 | `prefix` | Paths for configuration and logs. | dict of `prefix` [options](#options-for-main--nginx--prefix) | no |  |
 | `nameservers` | Specifies the resolvers that Nginx will use. Defaults to Cloudflare's IPv6 public DNS. | list of `str` | no | `['[2606:4700:4700::1111]:53', '[2606:4700:4700::1001]:53']` |
 | `nameservers_valid` | Time for which the resolver results are valid. | str | no | `300s` |
@@ -45,6 +46,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `security_headers` | Define or override security headers. These are merged with `nginx_security_headers_default` and written to `{{ nginx.prefix.config }}/include/security_headers.conf`. Structure: `- header: 'Name', value: 'Val', always: yes` | list of `dict` | no | `[]` |
 | `hsts` | Gives you control over the HSTS policy. | dict of `hsts` [options](#options-for-main--nginx--hsts) | no |  |
 | `default_server` | If true, configures a default server block. | bool | no | `True` |
+| `deny_hidden_files` | Deny access to hidden files (e.g. `.git`, `.env`), except `/.well-known/`. CIS NGINX Benchmark 2.5.3. Used by the default server and the `server()` proxy macro. Add `include {{ nginx.prefix.config }}/include/deny_hidden.conf;` to your own server blocks. | bool | no | `True` |
 | `client_max_body_size` | Sets the maximum allowed size of the client request body. | str | no | `100M` |
 | `redirects` | Specify HTTP/HTTPS redirects. Format: `http://example.com: https://www.example.com` The value may also be a mapping with `url`, `code` (default `301`) and `uri` (default `true`, appends `$request_uri`). To redirect different paths on the same host to different destinations, set `locations` to a list of `{ location, dest }` entries — see the Redirects example. Can be used interchangeably with `moved_permanently`. | dict | no |  |
 | `moved_permanently` | Specify redirects with optional status codes. Format: `http://example.com: { url: https://..., code: 307 }` Set `locations` on the destination mapping to redirect different paths to different targets — see the Redirects example. Can be used interchangeably with `redirects`. | dict | no |  |
@@ -52,6 +54,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `set_real_ip_from` | Dictionary of trusted proxy IP addresses to replace with original visitor IPs. Values are flattened. | dict | no |  |
 | `proxy` | Proxy settings. | dict of `proxy` [options](#options-for-main--nginx--proxy) | no |  |
 | `log_format` | Choose between `main` and `json` log format. | str | no | `main` |
+| `error_log_level` | Minimum severity written to the error log. CIS NGINX Benchmark 3.3 recommends `info` or `notice`. | str | no | `notice` |
 | `log_formats` | Control information written to logs. Keys are format names. Values can have `fields` (for JSON) or `value` (for raw string). | dict | no |  |
 | `modsecurity` | Configuration for [ModSecurity v3](https://github.com/SpiderLabs/ModSecurity). Disabled by default. Activate by setting `enabled: true`. recommended to start with `dry_run: true`. | dict of `modsecurity` [options](#options-for-main--nginx--modsecurity) | no |  |
 | `security_txt` | Adds [RFC9116](https://www.rfc-editor.org/info/rfc9116) compliance. If `Contact` is set, creates a compliant endpoint at `/.well-known/security.txt`. | dict of `security_txt` [options](#options-for-main--nginx--security_txt) | no |  |
@@ -61,6 +64,15 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `stub_status_port` | If set, serves a stub_status page on this port. | int | no |  |
 | `mimetypes` | Override or add new mimetypes. Format: `type-name: { key: 'application/x-type', value: ['ext1'] }` | dict | no |  |
 | `ansible_info` | Expose inventory hostname and other info via JSON. | dict of `ansible_info` [options](#options-for-main--nginx--ansible_info) | no |  |
+
+#### Options for `nginx.timeouts`
+
+|Option|Description|Type|Required|Default|
+|---|---|---|---|---|
+| `keepalive` | `keepalive_timeout`. CIS NGINX Benchmark 2.4.3: 10 seconds or less, but not 0. | str | no | `10s` |
+| `send` | `send_timeout`. CIS NGINX Benchmark 2.4.4: 10 seconds or less, but not 0. | str | no | `10s` |
+| `client_header` | `client_header_timeout`. CIS NGINX Benchmark 5.2.1. | str | no | `15s` |
+| `client_body` | `client_body_timeout`. CIS NGINX Benchmark 5.2.1. This is the time between two successive reads, not for the whole upload. Raise it in upload locations on slow links. | str | no | `15s` |
 
 #### Options for `nginx.prefix`
 
@@ -81,7 +93,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| `max_age` |  | int | no | `31536000` |
+| `max_age` |  | int | no | `63072000` |
 | `include_subdomains` |  | bool | no | `False` |
 | `preload` |  | bool | no | `False` |
 
@@ -89,7 +101,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 
 |Option|Description|Type|Required|Default|
 |---|---|---|---|---|
-| `hide_headers` | List of headers to hide from the upstream response. | list of `str` | no |  |
+| `hide_headers` | List of headers to hide from the upstream response (`proxy_hide_header` and `fastcgi_hide_header`). CIS NGINX Benchmark 2.5.4. Set globally in the `http` block and in each location of the `server()` proxy macro. | list of `str` | no | `['X-Varnish-Backend', 'X-Powered-By', 'X-AspNet-Version', 'X-AspNetMvc-Version']` |
 
 #### Options for `nginx.modsecurity`
 
@@ -143,6 +155,19 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 |---|
 | main |
 | json |
+
+#### Choices for main > nginx > error_log_level
+
+|Choice|
+|---|
+| debug |
+| info |
+| notice |
+| warn |
+| error |
+| crit |
+| alert |
+| emerg |
 
 ## Dependencies
 - dehydrated
