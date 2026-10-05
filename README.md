@@ -38,6 +38,8 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `nameservers_ipv6` | Enables or disables looking up of IPv6 addresses for resolved names. | str | no | on |
 | `server_names_hash_max_size` | Specifies the max size for the server names hash. Adjusting this may be useful if you use multiple long domain names. | int | no |  |
 | `server_names_hash_bucket_size` | Specifies the bucket size for the server names hash. Start with a value of 64 and try increasing by a power of 2 (128, 256...) if you see '[emerg] could not build the server_names_hash'. | int | no |  |
+| `map_hash_bucket_size` | Specifies the bucket size for map variables hash tables. Increase this if Nginx cannot build a map_hash due to long keys. | int | no |  |
+| `map_hash_max_size` | Specifies the maximum size for map variables hash tables. Increase this if you have many entries in map directives. | int | no |  |
 | `dhparam_bits` | Specifies the size of [Diffie-Hellman](https://wiki.openssl.org/index.php/Diffie-Hellman_parameters) parameters to be used. The default size is set to 4096, but you can change it to 2048 if needed. | int | no | 4096 |
 | `proxy_ssl_trusted_certificate` | Specifies the CA certificates that will be used to verify upstream TLS. Defaults to system CA bundle. | path | no |  |
 | `security_headers` | Define or override security headers. These are merged with `nginx_security_headers_default` and written to `{{ nginx.prefix.config }}/include/security_headers.conf`. Structure: `- header: 'Name', value: 'Val', always: yes` | list of 'dict' | no | [] |
