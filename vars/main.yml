@@ -13,7 +13,7 @@ nginx_security_headers_default:
       value: "1; mode=block"
       always: yes
     - header: "Referrer-Policy"
-      value: "no-referrer-when-downgrade"
+      value: "strict-origin-when-cross-origin"
       always: yes
     - header: "Content-Security-Policy"
       value: "frame-ancestors 'self'"

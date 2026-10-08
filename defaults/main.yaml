@@ -15,6 +15,11 @@ nginx:
       log: /var/log/modsecurity
   worker_processes: 8
   worker_rlimit_nofile:
+  timeouts:
+    keepalive: 10s
+    send: 10s
+    client_header: 15s
+    client_body: 15s
   user: "{{ 'www-data' if ansible_facts['system'] == 'Linux' else 'www' }}"
   nameservers:
     - "[2606:4700:4700::1111]:53"
@@ -27,6 +32,7 @@ nginx:
   map_hash_bucket_size:
   dhparam_bits: 4096
   default_server: true
+  deny_hidden_files: true
   moved_permanently: {}
   client_max_body_size: 100M
   redirects: {}
@@ -39,10 +45,11 @@ nginx:
       /usr/local/share/certs/ca-root-nss.crt
     {%- endif -%}
   hsts:
-    max_age: 31536000
+    max_age: 63072000
     include_subdomains: no
     preload: no
   log_format: main
+  error_log_level: notice
   log_formats:
     json:
       fields:
@@ -118,6 +125,9 @@ nginx:
   proxy:
     hide_headers:
       - "X-Varnish-Backend"
+      - "X-Powered-By"
+      - "X-AspNet-Version"
+      - "X-AspNetMvc-Version"
   security_txt:
     Contact:
     Expires: "{{ ansible_facts['date_time']['year'] | int + 5 | int }}-12-31T23:59:00.000Z"

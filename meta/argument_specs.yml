@@ -91,6 +91,28 @@ argument_specs:
           worker_rlimit_nofile:
             type: int
             description: Changes the limit on the maximum number of open files (RLIMIT_NOFILE) for worker processes.
+          timeouts:
+            type: dict
+            description: Connection timeouts, set globally in the `http` block. Override per server or location if needed.
+            options:
+              keepalive:
+                type: str
+                default: 10s
+                description: "`keepalive_timeout`. CIS NGINX Benchmark 2.4.3: 10 seconds or less, but not 0."
+              send:
+                type: str
+                default: 10s
+                description: "`send_timeout`. CIS NGINX Benchmark 2.4.4: 10 seconds or less, but not 0."
+              client_header:
+                type: str
+                default: 15s
+                description: "`client_header_timeout`. CIS NGINX Benchmark 5.2.1."
+              client_body:
+                type: str
+                default: 15s
+                description:
+                  - "`client_body_timeout`. CIS NGINX Benchmark 5.2.1."
+                  - "This is the time between two successive reads, not for the whole upload. Raise it in upload locations on slow links."
           prefix:
             type: dict
             description: Paths for configuration and logs.
@@ -169,7 +191,7 @@ argument_specs:
             options:
               max_age:
                 type: int
-                default: 31536000
+                default: 63072000
               include_subdomains:
                 type: bool
                 default: false
@@ -180,6 +202,12 @@ argument_specs:
             type: bool
             default: true
             description: If true, configures a default server block.
+          deny_hidden_files:
+            type: bool
+            default: true
+            description:
+              - "Deny access to hidden files (e.g. `.git`, `.env`), except `/.well-known/`. CIS NGINX Benchmark 2.5.3."
+              - "Used by the default server and the `server()` proxy macro. Add `include {{ nginx.prefix.config }}/include/deny_hidden.conf;` to your own server blocks."
 
           client_max_body_size:
             type: str
@@ -218,12 +246,20 @@ argument_specs:
               hide_headers:
                 type: list
                 elements: str
-                description: "List of headers to hide from the upstream response."
+                default: ["X-Varnish-Backend", "X-Powered-By", "X-AspNet-Version", "X-AspNetMvc-Version"]
+                description:
+                  - "List of headers to hide from the upstream response (`proxy_hide_header` and `fastcgi_hide_header`). CIS NGINX Benchmark 2.5.4."
+                  - "Set globally in the `http` block and in each location of the `server()` proxy macro."
           log_format:
             type: str
             default: main
             choices: [main, json]
             description: "Choose between `main` and `json` log format."
+          error_log_level:
+            type: str
+            default: notice
+            choices: [debug, info, notice, warn, error, crit, alert, emerg]
+            description: "Minimum severity written to the error log. CIS NGINX Benchmark 3.3 recommends `info` or `notice`."
           log_formats:
             type: dict
             description:
