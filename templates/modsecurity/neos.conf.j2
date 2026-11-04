@@ -1,20 +1,18 @@
+# Neos' editing UI legitimately submits markup, file paths and shell-like
+# strings that CRS reads as XSS, command injection or file access. Removing
+# those rules would also make real attacks on /neos invisible, so the whole
+# request runs in DetectionOnly instead: nothing is blocked, everything is
+# logged. Once the audit log shows which targets actually trip, replace this
+# with ctl:ruleRemoveTargetById and let /neos enforce again.
 SecRule REQUEST_URI "@beginsWith /neos" \
   "id:1002,\
   phase:1,\
   pass,\
   nolog,\
-  ctl:ruleRemoveById=941160,\
-  ctl:ruleRemoveById=941310,\
-  ctl:ruleRemoveById=932100,\
-  ctl:ruleRemoveById=932110,\
-  ctl:ruleRemoveById=921110,\
-  ctl:ruleRemoveById=933160,\
-  ctl:ruleRemoveById=930120,\
-  ctl:ruleRemoveById=941100,\
-  ctl:ruleRemoveById=941140,\
-  ctl:ruleRemoveById=941190,\
-  ctl:ruleRemoveById=932115"
+  ctl:ruleEngine=DetectionOnly"
 
+# Unconditional, so these seed the CRS defaults for every request, not just
+# /neos. They must run before crs-setup.conf, which is why they live here.
 SecAction \
   "id:900220,\
  phase:1,\
@@ -30,4 +28,3 @@ SecAction \
  pass,\
  t:none,\
  setvar:'tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE'"
-
