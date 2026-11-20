@@ -7,9 +7,11 @@
     executable: "{{ '/bin/bash' if ansible_facts['system'] == 'Linux' else '/usr/local/bin/bash' }}"
     cmd: nginx -v 2>&1 | grep -o "[0-9]*\\.[0-9]*\\.[0-9]*"
 
+# With HTTP/2 disabled, the templates take the separate directive path, whose
+# listen lines never contain http2, and leave out the http2 directive
 - name: Set the http2 directive fact depending on the nginx version
   ansible.builtin.set_fact:
-    nginx_separate_http2: "{{ true if nginx_version.stdout is version('1.25.1', '>=') else false }}"
+    nginx_separate_http2: "{{ nginx_version.stdout is version('1.25.1', '>=') or not nginx.http2 }}"
 
 - name: Set the ssl_reject_handshake fact depending on the nginx version
   ansible.builtin.set_fact:
