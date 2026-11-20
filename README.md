@@ -46,6 +46,7 @@ An Ansible role that sets up the Nginx web server on a Proserver.
 | `security_headers` | Define or override security headers. These are merged with `nginx_security_headers_default` and written to `{{ nginx.prefix.config }}/include/security_headers.conf`. Structure: `- header: 'Name', value: 'Val', always: yes` | list of `dict` | no | `[]` |
 | `hsts` | Gives you control over the HSTS policy. | dict of `hsts` [options](#options-for-main--nginx--hsts) | no |  |
 | `default_server` | If true, configures a default server block. | bool | no | `True` |
+| `http2` | If false, HTTP/2 is disabled on all server blocks rendered by this role (e.g. to mitigate HTTP/2 vulnerabilities until nginx is patched). | bool | no | `True` |
 | `fqdn_server` | If true, the default server configuration includes an HTTPS server block for the host's FQDN (only rendered when a certificate for the FQDN exists). Set to false when another server block uses the FQDN as its `server_name`. The catch-all default servers are still configured. | bool | no | `True` |
 | `deny_hidden_files` | Deny access to hidden files (e.g. `.git`, `.env`), except `/.well-known/`. CIS NGINX Benchmark 2.5.3. Used by the default server and the `server()` proxy macro. Add `include {{ nginx.prefix.config }}/include/deny_hidden.conf;` to your own server blocks. | bool | no | `True` |
 | `client_max_body_size` | Sets the maximum allowed size of the client request body. | str | no | `100M` |
