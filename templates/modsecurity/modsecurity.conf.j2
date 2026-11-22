@@ -31,7 +31,7 @@ SecRule MULTIPART_UNMATCHED_BOUNDARY "!@eq 0" \
   "id:'200004',phase:2,t:none,log,deny,msg:'Multipart parser detected a possible unmatched boundary.'"
 
 SecRule TX:/^MSC_/ "!@streq 0" \
-  "id:'200005',phase:2,t:none,deny,msg:'ModSecurity internal error flagged: %{MATCHED_VAR_NAME}'
+  "id:'200005',phase:2,t:none,deny,msg:'ModSecurity internal error flagged: %{MATCHED_VAR_NAME}'"
 
 {% for i in (nginx.modsecurity.rules) | dict2items %}
 SecRule {{ i.value }}
