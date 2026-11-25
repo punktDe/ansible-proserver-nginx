@@ -15,3 +15,4 @@
   ansible.builtin.apt:
     name:
       - libnginx-mod-stream
+      - libnginx-mod-http-headers-more-filter

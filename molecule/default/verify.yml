@@ -100,3 +100,13 @@
       ansible.builtin.uri:
         url: "http://127.0.0.1:8080{{ item.path }}"
         status_code: "{{ item.status }}"
+
+    - name: Fetch response headers from the test server
+      register: server_header
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8080/index.html
+
+    - name: Assert the Server header is not sent
+      ansible.builtin.assert:
+        that: server_header.server is not defined
+        fail_msg: "Server header sent: {{ server_header.server | default('') }}"
