@@ -218,6 +218,12 @@ argument_specs:
             description:
               - "Deny access to hidden files (e.g. `.git`, `.env`), except `/.well-known/`. CIS NGINX Benchmark 2.5.3."
               - "Used by the default server and the `server()` proxy macro. Add `include {{ nginx.prefix.config }}/include/deny_hidden.conf;` to your own server blocks."
+          hide_server_header:
+            type: bool
+            default: true
+            description:
+              - "Remove the `Server` response header entirely. `server_tokens off` only hides the version, not `Server: nginx`."
+              - "Requires `ngx_http_headers_more_filter_module.so` in `nginx.dynamic_modules`."
 
           client_max_body_size:
             type: str
